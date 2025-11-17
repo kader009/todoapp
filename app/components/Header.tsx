@@ -1,13 +1,12 @@
-// components/Header.tsx
-'use client';
 import { Bell, Calendar } from 'lucide-react';
 
 export default function Header() {
-  const today = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
+  const date = new Date();
+  const weekday = date.toLocaleDateString('en-US', { weekday: 'long' });
+  const formattedDate = date.toLocaleDateString('en-US', {
     month: '2-digit',
     day: '2-digit',
-    year: 'numeric'
+    year: 'numeric',
   });
 
   return (
@@ -15,7 +14,10 @@ export default function Header() {
       {/* Logo */}
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 bg-blue-600 rounded"></div>
-        <span className="font-bold text-xl">DREAMY SOFTWARE</span>
+        <div className="flex flex-col">
+          <span className="font-extrabold text-lg leading-tight">DREAMY</span>
+          <span className="font-bold text-sm leading-tight">SOFTWARE</span>
+        </div>
       </div>
 
       {/* Right Section */}
@@ -24,14 +26,14 @@ export default function Header() {
           <Bell size={20} className="text-gray-600" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
-        
+
         <button className="p-2 hover:bg-gray-100 rounded-full">
           <Calendar size={20} className="text-gray-600" />
         </button>
 
         <div className="text-sm text-gray-600">
-          <div className="font-semibold">Friday</div>
-          <div>{today}</div>
+          <div className="font-semibold">{weekday}</div>
+          <div className="text-gray-500">{formattedDate}</div>
         </div>
       </div>
     </header>

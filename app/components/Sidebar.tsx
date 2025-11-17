@@ -14,7 +14,7 @@ export default function Sidebar() {
   };
 
   const navItems = [
-    { name: 'Dashboard', href: '/todos', icon: Home },
+    { name: 'Dashboard', href: '/', icon: Home },
     { name: 'Todos', href: '/todos', icon: CheckSquare },
     { name: 'Account Information', href: '/profile', icon: User },
   ];
