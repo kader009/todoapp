@@ -24,10 +24,13 @@ export default function Sidebar() {
       {/* User Profile Section */}
       <div className="p-6 text-center border-b border-blue-800">
         <div className="w-20 h-20 rounded-full bg-gray-300 mx-auto mb-3 overflow-hidden">
-          <img
-            src="/default-avatar.png"
+          <Image
+            src="/profile.jpg"
             alt="Profile"
+            width={80}
+            height={80}
             className="w-full h-full object-cover"
+            unoptimized
           />
         </div>
         <h3 className="font-semibold">amanuel</h3>

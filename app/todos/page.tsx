@@ -41,7 +41,7 @@ const TodosPage = () => {
         <Header />
 
         {/* Page Content */}
-        <main className="flex-1 p-8 bg-gradient-to-br from-blue-50 to-indigo-50">
+        <main className="flex-1 p-8 bg-linear-to-br from-blue-50 to-indigo-50">
           <div className="max-w-5xl mx-auto">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">

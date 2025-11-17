@@ -14,7 +14,7 @@ const page = () => {
         <Header />
 
         {/* Page Content */}
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-8 bg-linear-to-br from-blue-50 to-indigo-50">
           <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-8">
             <div className="mb-6">
               <h1 className="text-2xl font-bold whitespace-nowrap">
