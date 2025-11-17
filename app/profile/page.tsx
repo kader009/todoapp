@@ -25,19 +25,22 @@ const page = () => {
 
             <form>
               {/* Profile Image Upload */}
-              <div className="mb-8 flex items-center gap-6">
+              <div
+                className="mb-8 flex items-center gap-6 p-4 border border-[#A1A3AB]/63 rounded-lg w-[365px] h-[124px]"
+                style={{ boxShadow: '0px 2px 1px 0px rgba(0, 0, 0, 0.05)' }}
+              >
                 <div className="relative">
-                  <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                  <div className="w-32 h-32 flex items-center justify-center overflow-hidden">
                     <Image
                       src="/img.png"
                       alt="Profile"
-                      width={128}
-                      height={128}
+                      width={96}
+                      height={96}
                       className="object-cover"
                       unoptimized
                     />
                   </div>
-                  <button type="button" className="absolute bottom-0 right-0">
+                  <button type="button" className="absolute bottom-6 right-0">
                     <Image
                       src="/camera.png"
                       alt="Upload"
@@ -67,109 +70,114 @@ const page = () => {
               </div>
 
               {/* Form Fields */}
-              <div className="grid grid-cols-2 gap-6 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    name="firstName"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Enter first name"
-                  />
-                </div>
+              <div
+                className="p-4 border border-[#A1A3AB]/63 rounded-lg"
+                style={{ boxShadow: '0px 2px 1px 0px rgba(0, 0, 0, 0.05)' }}
+              >
+                <div className="grid grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      First Name
+                    </label>
+                    <input
+                      type="text"
+                      name="firstName"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Enter first name"
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Last Name
-                  </label>
-                  <input
-                    type="text"
-                    name="lastName"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Enter last name"
-                  />
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter email"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-6 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Address
-                  </label>
-                  <input
-                    type="text"
-                    name="address"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Enter address"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Contact Number
-                  </label>
-                  <input
-                    type="tel"
-                    name="contactNumber"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Enter contact number"
-                  />
-                </div>
-              </div>
-
-              <div className="mb-8">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Birthday
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    name="birthday"
-                    placeholder=""
-                    className="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                    <Image
-                      src="/birthday.png"
-                      alt="Birthday"
-                      width={16}
-                      height={16}
-                      className="object-contain"
-                      unoptimized
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Last Name
+                    </label>
+                    <input
+                      type="text"
+                      name="lastName"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Enter last name"
                     />
                   </div>
                 </div>
-              </div>
 
-              {/* Action Buttons */}
-              <div className="flex gap-4 justify-center">
-                <button
-                  type="button"
-                  className="bg-[#5272FF] text-white w-[200px] h-10 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
-                >
-                  Save Changes
-                </button>
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter email"
+                  />
+                </div>
 
-                <button
-                  type="button"
-                  className="w-[200px] h-10 bg-[#8CA3CD] text-white rounded-lg hover:bg-gray-500 transition-colors flex items-center justify-center"
-                >
-                  Cancel
-                </button>
+                <div className="grid grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Address
+                    </label>
+                    <input
+                      type="text"
+                      name="address"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Enter address"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Contact Number
+                    </label>
+                    <input
+                      type="tel"
+                      name="contactNumber"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Enter contact number"
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-8">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Birthday
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="birthday"
+                      placeholder=""
+                      className="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <Image
+                        src="/birthday.png"
+                        alt="Birthday"
+                        width={16}
+                        height={16}
+                        className="object-contain"
+                        unoptimized
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-4 justify-center">
+                  <button
+                    type="button"
+                    className="bg-[#5272FF] text-white w-[200px] h-10 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+                  >
+                    Save Changes
+                  </button>
+
+                  <button
+                    type="button"
+                    className="w-[200px] h-10 bg-[#8CA3CD] text-white rounded-lg hover:bg-gray-500 transition-colors flex items-center justify-center"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </form>
           </div>
