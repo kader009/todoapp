@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 
@@ -15,22 +16,54 @@ const page = () => {
         {/* Page Content */}
         <main className="flex-1 p-8">
           <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-8">
-            <h1 className="text-2xl font-bold mb-6">Account Information</h1>
-            
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold whitespace-nowrap">
+                Account Information
+              </h1>
+              <div className="w-[161px] border-b-2 border-[#5272FF] mt-2"></div>
+            </div>
+
             <form>
               {/* Profile Image Upload */}
-              <div className="mb-8 flex justify-center">
+              <div className="mb-8 flex items-center gap-6">
                 <div className="relative">
                   <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                    <span className="text-gray-400 text-4xl">👤</span>
+                    <Image
+                      src="/img.png"
+                      alt="Profile"
+                      width={128}
+                      height={128}
+                      className="object-cover"
+                      unoptimized
+                    />
                   </div>
-                  <button
-                    type="button"
-                    className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700"
-                  >
-                    📷
+                  <button type="button" className="absolute bottom-0 right-0">
+                    <Image
+                      src="/camera.png"
+                      alt="Upload"
+                      width={32}
+                      height={32}
+                      className="object-contain"
+                      unoptimized
+                    />
                   </button>
                 </div>
+
+                {/* Upload Button */}
+                <button
+                  type="button"
+                  className="flex justify-center items-center gap-2 w-[197px] h-10 py-2 bg-[#5272FF] text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <Image
+                    src="/svg.png"
+                    alt="Upload icon"
+                    width={16}
+                    height={16}
+                    className="object-contain"
+                    unoptimized
+                  />
+                  <span>Upload new photo</span>
+                </button>
               </div>
 
               {/* Form Fields */}
@@ -102,25 +135,38 @@ const page = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Birthday
                 </label>
-                <input
-                  type="date"
-                  name="birthday"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="birthday"
+                    placeholder=""
+                    className="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <Image
+                      src="/birthday.png"
+                      alt="Birthday"
+                      width={16}
+                      height={16}
+                      className="object-contain"
+                      unoptimized
+                    />
+                  </div>
+                </div>
               </div>
 
               {/* Action Buttons */}
               <div className="flex gap-4 justify-center">
                 <button
                   type="button"
-                  className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+                  className="bg-[#5272FF] text-white w-[200px] h-10 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
                 >
                   Save Changes
                 </button>
-                
+
                 <button
                   type="button"
-                  className="bg-gray-400 text-white px-8 py-3 rounded-lg hover:bg-gray-500 transition-colors"
+                  className="w-[200px] h-10 bg-[#8CA3CD] text-white rounded-lg hover:bg-gray-500 transition-colors flex items-center justify-center"
                 >
                   Cancel
                 </button>
