@@ -41,7 +41,7 @@ const TodosPage = () => {
         <Header />
 
         {/* Page Content */}
-        <main className="flex-1 p-8 bg-linear-to-br from-blue-50 to-indigo-50 overflow-auto">
+        <main className="flex-1 p-8 bg-linear-to-br from-blue-50 to-indigo-50 overflow-auto relative">
           <div className="max-w-7xl mx-auto w-full">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
@@ -147,148 +147,152 @@ const TodosPage = () => {
               </div>
             </div>
           </div>
-        </main>
-      </div>
 
-      {/* New Task Modal */}
-      {showNewTaskModal && (
-        <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-          onClick={() => setShowNewTaskModal(false)}
-        >
-          <div
-            className="bg-white rounded-2xl p-8 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h2 className="text-xl font-semibold text-gray-800">
-                  Add New Task
-                </h2>
-                <div className="w-[66px] border-b-2 border-[#5272FF] mt-2"></div>
-              </div>
-              <button
-                onClick={() => setShowNewTaskModal(false)}
-                className="text-sm font-medium text-gray-600 hover:text-gray-800"
+          {/* New Task Modal */}
+          {showNewTaskModal && (
+            <div
+              className="absolute inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+              onClick={() => setShowNewTaskModal(false)}
+            >
+              <div
+                className="bg-white rounded-2xl p-8 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
               >
-                <span>Go Back</span>
-                <div className="border-b border-black mt-1"></div>
-              </button>
-            </div>
+                {/* Header */}
+                <div className="flex justify-between items-center mb-6">
+                  <div>
+                    <h2 className="text-xl font-semibold text-gray-800">
+                      Add New Task
+                    </h2>
+                    <div className="w-[66px] border-b-2 border-[#5272FF] mt-2"></div>
+                  </div>
+                  <button
+                    onClick={() => setShowNewTaskModal(false)}
+                    className="text-sm font-medium text-gray-600 hover:text-gray-800"
+                  >
+                    <span>Go Back</span>
+                    <div className="border-b border-black mt-1"></div>
+                  </button>
+                </div>
 
-            <form onSubmit={handleAddTodo} className="space-y-6">
-              {/* Title */}
-              <div>
-                <label className="block text-sm font-medium mb-1">Title</label>
-                <input
-                  type="text"
-                  value={newTaskTitle}
-                  onChange={(e) => setNewTaskTitle(e.target.value)}
-                  placeholder=""
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                  autoFocus
-                />
-              </div>
-
-              {/* Date */}
-              <div>
-                <label className="block text-sm font-medium mb-1">Date</label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                  />
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <Image
-                      src="/birthday.png"
-                      alt="Date"
-                      width={14}
-                      height={14}
-                      unoptimized
+                <form onSubmit={handleAddTodo} className="space-y-6">
+                  {/* Title */}
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Title
+                    </label>
+                    <input
+                      type="text"
+                      value={newTaskTitle}
+                      onChange={(e) => setNewTaskTitle(e.target.value)}
+                      placeholder=""
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      autoFocus
                     />
                   </div>
-                </div>
-              </div>
 
-              {/* Priority */}
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Priority
-                </label>
-                <div className="flex items-center gap-6">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="priority"
-                      value="extreme"
-                      className="w-4 h-4 text-pink-600 focus:ring-pink-500"
+                  {/* Date */}
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Date
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      />
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <Image
+                          src="/birthday.png"
+                          alt="Date"
+                          width={14}
+                          height={14}
+                          unoptimized
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Priority */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Priority
+                    </label>
+                    <div className="flex items-center gap-6">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="priority"
+                          value="extreme"
+                          className="w-4 h-4 text-pink-600 focus:ring-pink-500"
+                        />
+                        <span className="w-2 h-2 rounded-full bg-pink-600"></span>
+                        <span className="text-sm">Extreme</span>
+                      </label>
+
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="priority"
+                          value="moderate"
+                          className="w-4 h-4 text-green-600 focus:ring-green-500"
+                        />
+                        <span className="w-2 h-2 rounded-full bg-green-600"></span>
+                        <span className="text-sm">Moderate</span>
+                      </label>
+
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="priority"
+                          value="low"
+                          className="w-4 h-4 text-yellow-500 focus:ring-yellow-500"
+                        />
+                        <span className="w-2 h-2 rounded-full bg-yellow-500"></span>
+                        <span className="text-sm">Low</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Task Description
+                    </label>
+                    <textarea
+                      placeholder="Start writing here..."
+                      className="w-full h-40 p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 outline-none"
                     />
-                    <span className="w-2 h-2 rounded-full bg-pink-600"></span>
-                    <span className="text-sm">Extreme</span>
-                  </label>
+                  </div>
 
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="priority"
-                      value="moderate"
-                      className="w-4 h-4 text-green-600 focus:ring-green-500"
-                    />
-                    <span className="w-2 h-2 rounded-full bg-green-600"></span>
-                    <span className="text-sm">Moderate</span>
-                  </label>
+                  {/* Footer Buttons */}
+                  <div className="flex items-center justify-between pt-4">
+                    <button
+                      type="submit"
+                      className="bg-[#5272FF] text-white w-[90px] h-[34px] rounded-md hover:bg-blue-700 transition-colors"
+                    >
+                      Done
+                    </button>
 
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="priority"
-                      value="low"
-                      className="w-4 h-4 text-yellow-500 focus:ring-yellow-500"
-                    />
-                    <span className="w-2 h-2 rounded-full bg-yellow-500"></span>
-                    <span className="text-sm">Low</span>
-                  </label>
-                </div>
+                    <button
+                      type="button"
+                      className="hover:opacity-75 transition-opacity"
+                    >
+                      <Image
+                        src="/delet.png"
+                        alt="Delete"
+                        width={34}
+                        height={34}
+                        unoptimized
+                      />
+                    </button>
+                  </div>
+                </form>
               </div>
-
-              {/* Description */}
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Task Description
-                </label>
-                <textarea
-                  placeholder="Start writing here..."
-                  className="w-full h-40 p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-              </div>
-
-              {/* Footer Buttons */}
-              <div className="flex items-center justify-between pt-4">
-                <button
-                  type="submit"
-                  className="bg-[#5272FF] text-white w-[90px] h-[34px] rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Done
-                </button>
-
-                <button
-                  type="button"
-                  className="hover:opacity-75 transition-opacity"
-                >
-                  <Image
-                    src="/delet.png"
-                    alt="Delete"
-                    width={34}
-                    height={34}
-                    unoptimized
-                  />
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 };
