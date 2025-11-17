@@ -46,7 +46,7 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-8 py-3 mb-2 transition-colors ${
+              className={`flex items-center gap-3 px-8 py-3 mb-2 transition-colors text-base ${
                 isActive
                   ? 'bg-linear-to-r from-[#5272FF]/40 to-[#0D224A]/60 text-white font-semibold'
                   : 'text-gray-300 hover:bg-blue-800'
@@ -57,7 +57,9 @@ export default function Sidebar() {
                 alt={item.name}
                 width={20}
                 height={20}
-                className="object-contain"
+                className={`object-contain ${
+                  isActive ? 'brightness-0 invert' : ''
+                }`}
                 unoptimized
               />
               <span>{item.name}</span>

@@ -17,7 +17,7 @@ const page = () => {
         <main className="flex-1 p-8 bg-linear-to-br from-blue-50 to-indigo-50">
           <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-8">
             <div className="mb-6">
-              <h1 className="text-2xl font-bold whitespace-nowrap">
+              <h1 className="text-[24px] font-bold whitespace-nowrap">
                 Account Information
               </h1>
               <div className="w-[161px] border-b-2 border-[#5272FF] mt-2"></div>
@@ -26,7 +26,7 @@ const page = () => {
             <form>
               {/* Profile Image Upload */}
               <div
-                className="mb-8 flex items-center gap-6 p-4 border border-[#A1A3AB]/63 rounded-lg w-[365px] h-[124px]"
+                className="mb-8 flex items-center gap-6 p-4 border border-[#A1A3AB]/63 rounded-2xl w-[365px] h-[124px]"
                 style={{ boxShadow: '0px 2px 1px 0px rgba(0, 0, 0, 0.05)' }}
               >
                 <div className="relative">
@@ -71,7 +71,7 @@ const page = () => {
 
               {/* Form Fields */}
               <div
-                className="p-4 border border-[#A1A3AB]/63 rounded-lg"
+                className="p-4 border border-[#A1A3AB]/63 rounded-2xl"
                 style={{ boxShadow: '0px 2px 1px 0px rgba(0, 0, 0, 0.05)' }}
               >
                 <div className="grid grid-cols-2 gap-6 mb-6">
