@@ -82,7 +82,7 @@ const page = () => {
                     <input
                       type="text"
                       name="firstName"
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
                       placeholder="Enter first name"
                     />
                   </div>
@@ -94,7 +94,7 @@ const page = () => {
                     <input
                       type="text"
                       name="lastName"
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
                       placeholder="Enter last name"
                     />
                   </div>
@@ -107,7 +107,7 @@ const page = () => {
                   <input
                     type="email"
                     name="email"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
                     placeholder="Enter email"
                   />
                 </div>
@@ -120,7 +120,7 @@ const page = () => {
                     <input
                       type="text"
                       name="address"
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
                       placeholder="Enter address"
                     />
                   </div>
@@ -132,7 +132,7 @@ const page = () => {
                     <input
                       type="tel"
                       name="contactNumber"
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
                       placeholder="Enter contact number"
                     />
                   </div>
@@ -147,7 +147,7 @@ const page = () => {
                       type="text"
                       name="birthday"
                       placeholder=""
-                      className="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:outline-none"
                     />
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
                       <Image
