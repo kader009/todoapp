@@ -32,15 +32,15 @@ const TodosPage = () => {
 
   return (
     <div className="flex min-h-screen">
-      {/* Sidebar - Fixed width */}
+      {/* Sidebar */}
       <Sidebar />
 
-      {/* Main Content Area - Sidebar er pore, full height nibe */}
+      {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-h-screen">
-        {/* Header - Top e fixed */}
+        {/* Header */}
         <Header />
 
-        {/* Page Content - Remaining space puro nibe */}
+        {/* Page Content */}
         <main className="flex-1 p-8 bg-linear-to-br from-blue-50 to-indigo-50 overflow-auto">
           <div className="max-w-7xl mx-auto w-full">
             {/* Header */}
@@ -61,7 +61,7 @@ const TodosPage = () => {
 
             {/* Search & Filter Bar */}
             <div className="flex items-center gap-4 mb-6">
-              {/* Search Bar - Responsive width */}
+              {/* Search Bar */}
               <div className="relative flex-1 w-full h-9">
                 <input
                   type="text"
@@ -96,7 +96,9 @@ const TodosPage = () => {
                 {showDateFilter && (
                   <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg w-64 z-10">
                     <div className="px-4 py-3">
-                      <h3 className="font-semibold text-left text-gray-700">Date</h3>
+                      <h3 className="font-semibold text-left text-gray-700">
+                        Date
+                      </h3>
                     </div>
                     <div className="mx-4 border-b border-gray-200"></div>
 
@@ -150,11 +152,11 @@ const TodosPage = () => {
 
       {/* New Task Modal */}
       {showNewTaskModal && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
           onClick={() => setShowNewTaskModal(false)}
         >
-          <div 
+          <div
             className="bg-white rounded-2xl p-8 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
@@ -194,7 +196,7 @@ const TodosPage = () => {
                 <label className="block text-sm font-medium mb-1">Date</label>
                 <div className="relative">
                   <input
-                    type="date"
+                    type="text"
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                   />
                   <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -211,12 +213,14 @@ const TodosPage = () => {
 
               {/* Priority */}
               <div>
-                <label className="block text-sm font-medium mb-2">Priority</label>
+                <label className="block text-sm font-medium mb-2">
+                  Priority
+                </label>
                 <div className="flex items-center gap-6">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input 
-                      type="radio" 
-                      name="priority" 
+                    <input
+                      type="radio"
+                      name="priority"
                       value="extreme"
                       className="w-4 h-4 text-pink-600 focus:ring-pink-500"
                     />
@@ -225,9 +229,9 @@ const TodosPage = () => {
                   </label>
 
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input 
-                      type="radio" 
-                      name="priority" 
+                    <input
+                      type="radio"
+                      name="priority"
                       value="moderate"
                       className="w-4 h-4 text-green-600 focus:ring-green-500"
                     />
@@ -236,9 +240,9 @@ const TodosPage = () => {
                   </label>
 
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input 
-                      type="radio" 
-                      name="priority" 
+                    <input
+                      type="radio"
+                      name="priority"
                       value="low"
                       className="w-4 h-4 text-yellow-500 focus:ring-yellow-500"
                     />

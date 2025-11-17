@@ -5,12 +5,12 @@ import Sidebar from '../components/Sidebar';
 const page = () => {
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar - Fixed width */}
+      {/* Sidebar */}
       <Sidebar />
 
-      {/* Main Content Area - Sidebar er pore start hobe */}
+      {/* Main Content Area */}
       <div className="flex-1 flex flex-col">
-        {/* Header - Sidebar er width er por theke shuru */}
+        {/* Header */}
         <Header />
 
         {/* Page Content */}
@@ -65,7 +65,7 @@ const page = () => {
                     className="object-contain"
                     unoptimized
                   />
-                  <span>Upload new photo</span>
+                  <span className="capitalize">Upload new photo</span>
                 </button>
               </div>
 
