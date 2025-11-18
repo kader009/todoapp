@@ -16,11 +16,15 @@ import {
   resetDeleteSuccess,
   type Todo,
 } from '@/libs/feature/todoSlice';
+import { getUserProfile } from '@/libs/feature/authSlice';
 
 const TodosPage = () => {
   const dispatch = useAppDispatch();
   const { todos, loading, error, createSuccess, updateSuccess, deleteSuccess } =
     useAppSelector((state) => state.todos);
+
+  // Get user data to check if profile needs to be fetched
+  const { user } = useAppSelector((state) => state.auth);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [showDateFilter, setShowDateFilter] = useState(false);
@@ -49,6 +53,14 @@ const TodosPage = () => {
   useEffect(() => {
     dispatch(getTodos({}));
   }, [dispatch]);
+
+  // Fetch user profile if email is empty (only has user_id from JWT)
+  useEffect(() => {
+    if (user && user.id && !user.email) {
+      console.log('User profile incomplete, fetching full data...');
+      dispatch(getUserProfile());
+    }
+  }, [user, dispatch]);
 
   // Handle search with debounce
   useEffect(() => {

@@ -9,6 +9,7 @@ import {
   loginUser,
   clearError,
   resetLoginSuccess,
+  getUserProfile,
 } from '@/libs/feature/authSlice';
 import { toast } from 'sonner';
 
@@ -53,6 +54,12 @@ export default function LoginPage() {
   useEffect(() => {
     if (loginSuccess) {
       toast.success('Login successful! Redirecting...');
+
+      // Always fetch user profile to get complete user data
+      // JWT token only contains user_id, not email/first_name/last_name
+      console.log('Login successful, fetching complete user profile...');
+      dispatch(getUserProfile());
+
       setTimeout(() => {
         dispatch(resetLoginSuccess());
         router.push('/todos');

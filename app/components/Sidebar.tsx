@@ -2,13 +2,32 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
+import { useAppDispatch, useAppSelector } from '@/libs/hook';
+import { logout } from '@/libs/feature/authSlice';
+import { clearTodos } from '@/libs/feature/todoSlice';
+import { toast } from 'sonner';
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  // Get user data from Redux (persisted)
+  const { user, loading } = useAppSelector((state) => state.auth);
 
   const handleLogout = () => {
+    // Clear tokens from localStorage
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+
+    // Clear Redux persisted state
+    dispatch(logout());
+    dispatch(clearTodos());
+
+    // Show notification
+    toast.success('Logged out successfully!');
+
+    // Redirect to login
     router.push('/login');
   };
 
@@ -32,8 +51,26 @@ export default function Sidebar() {
             unoptimized
           />
         </div>
-        <h3 className="font-semibold">amanuel</h3>
-        <p className="text-sm text-gray-300">aman@gmail.com</p>
+        <h3 className="font-semibold">
+          {loading ? (
+            <span className="animate-pulse">Loading...</span>
+          ) : user?.first_name && user?.last_name ? (
+            `${user.first_name} ${user.last_name}`
+          ) : user?.email ? (
+            user.email.split('@')[0]
+          ) : user?.id ? (
+            `User #${user.id}`
+          ) : (
+            'User'
+          )}
+        </h3>
+        <p className="text-sm text-gray-300">
+          {loading ? (
+            <span className="animate-pulse">Loading...</span>
+          ) : (
+            user?.email || 'Please wait...'
+          )}
+        </p>
       </div>
 
       {/* Navigation */}
