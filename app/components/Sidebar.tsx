@@ -43,7 +43,15 @@ export default function Sidebar() {
       <div className="p-6 text-center mt-[60px]">
         <div className="w-20 h-20 rounded-full bg-gray-300 mx-auto mb-3 overflow-hidden border border-white">
           <Image
-            src="/profile.jpg"
+            src={
+              user?.profile_image
+                ? user.profile_image.startsWith('http')
+                  ? user.profile_image
+                  : `https://todo-app.pioneeralpha.com${
+                      user.profile_image.startsWith('/') ? '' : '/'
+                    }${user.profile_image}`
+                : '/profile.jpg'
+            }
             alt="Profile"
             width={80}
             height={80}
@@ -107,7 +115,7 @@ export default function Sidebar() {
       {/* Logout Button */}
       <button
         onClick={handleLogout}
-        className="flex items-center gap-3 px-8 py-4 text-gray-300 hover:bg-blue-800 transition-colors"
+        className="flex items-center gap-3 px-8 py-4 text-gray-300 hover:bg-blue-800 transition-colors cursor-pointer"
       >
         <Image
           src="/Vector.png"

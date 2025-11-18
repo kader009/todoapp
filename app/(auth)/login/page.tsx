@@ -12,6 +12,8 @@ import {
   getUserProfile,
 } from '@/libs/feature/authSlice';
 import { toast } from 'sonner';
+import { z } from 'zod';
+import { loginSchema } from '@/libs/validations/authSchema';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -25,6 +27,9 @@ export default function LoginPage() {
     password: '',
   });
 
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+
   // Handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,22 +37,80 @@ export default function LoginPage() {
       ...prev,
       [name]: value,
     }));
+
+    // Validate field if already touched
+    if (touched[name]) {
+      try {
+        const fieldSchema =
+          loginSchema.shape[name as keyof typeof loginSchema.shape];
+        if (fieldSchema) {
+          fieldSchema.parse(value);
+          setFieldErrors((prev) => ({ ...prev, [name]: '' }));
+        }
+      } catch (err) {
+        if (err instanceof z.ZodError) {
+          setFieldErrors((prev) => ({
+            ...prev,
+            [name]: err.issues[0]?.message || '',
+          }));
+        }
+      }
+    }
+
     // Clear error when user types
     if (error) dispatch(clearError());
+  };
+
+  // Handle field blur
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setTouched((prev) => ({ ...prev, [name]: true }));
+
+    try {
+      const fieldSchema =
+        loginSchema.shape[name as keyof typeof loginSchema.shape];
+      if (fieldSchema) {
+        fieldSchema.parse(value);
+        setFieldErrors((prev) => ({ ...prev, [name]: '' }));
+      }
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          [name]: err.issues[0]?.message || '',
+        }));
+      }
+    }
   };
 
   // Handle form submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation
-    if (!formData.email || !formData.password) {
-      toast.error('Email and password are required');
-      return;
-    }
+    // Mark all fields as touched
+    const allTouched: Record<string, boolean> = {};
+    Object.keys(formData).forEach((key) => {
+      allTouched[key] = true;
+    });
+    setTouched(allTouched);
 
-    // Dispatch login action
-    dispatch(loginUser(formData));
+    // Validate using Zod
+    try {
+      loginSchema.parse(formData);
+      setFieldErrors({});
+      dispatch(loginUser(formData));
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        const errors: Record<string, string> = {};
+        err.issues.forEach((issue) => {
+          if (issue.path[0]) {
+            errors[issue.path[0] as string] = issue.message;
+          }
+        });
+        setFieldErrors(errors);
+        toast.error('Please fix all validation errors');
+      }
+    }
   };
 
   // Show notifications for success/error
@@ -103,10 +166,18 @@ export default function LoginPage() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full border border-[#D1D5DB] rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+                onBlur={handleBlur}
+                className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring ${
+                  touched.email && fieldErrors.email
+                    ? 'border-red-500 focus:ring-red-300'
+                    : 'border-[#D1D5DB] focus:ring-blue-300'
+                }`}
                 placeholder="Enter your email"
                 disabled={loading}
               />
+              {touched.email && fieldErrors.email && (
+                <p className="text-red-500 text-xs mt-1">{fieldErrors.email}</p>
+              )}
             </div>
 
             <div>
@@ -116,10 +187,20 @@ export default function LoginPage() {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full border border-[#D1D5DB] rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+                onBlur={handleBlur}
+                className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring ${
+                  touched.password && fieldErrors.password
+                    ? 'border-red-500 focus:ring-red-300'
+                    : 'border-[#D1D5DB] focus:ring-blue-300'
+                }`}
                 placeholder="Enter your password"
                 disabled={loading}
               />
+              {touched.password && fieldErrors.password && (
+                <p className="text-red-500 text-xs mt-1">
+                  {fieldErrors.password}
+                </p>
+              )}
             </div>
 
             <div className="flex items-center justify-between text-sm">

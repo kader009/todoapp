@@ -1,8 +1,163 @@
+'use client';
+
+import { useState, useRef, useEffect, FormEvent, ChangeEvent } from 'react';
 import Image from 'next/image';
+import { toast } from 'sonner';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
+import { useAppDispatch, useAppSelector } from '@/libs/hook';
+import {
+  updateUserProfile,
+  resetUpdateSuccess,
+  getUserProfile,
+} from '@/libs/feature/authSlice';
 
-const page = () => {
+const Profile = () => {
+  const dispatch = useAppDispatch();
+  const { user, loading, error, updateSuccess } = useAppSelector(
+    (state) => state.auth
+  );
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    address: '',
+    contactNumber: '',
+    birthday: '',
+    bio: '',
+  });
+
+  // Initialize form data when component mounts or user changes
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        firstName: user.first_name || '',
+        lastName: user.last_name || '',
+        address: user.address || '',
+        contactNumber: user.contact_number || '',
+        birthday: user.birthday || '',
+        bio: user.bio || '',
+      }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]); // Only re-run when user ID changes
+
+  // Handle success/error notifications
+  useEffect(() => {
+    if (updateSuccess) {
+      toast.success('Profile updated successfully!');
+      dispatch(resetUpdateSuccess());
+      // Clear image preview
+      setImagePreview(null);
+      setImageFile(null);
+      // Refresh user profile to get updated data
+      dispatch(getUserProfile());
+    }
+    if (error && !loading) {
+      toast.error(error);
+    }
+  }, [updateSuccess, error, loading, dispatch]);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select an image file');
+        return;
+      }
+      // Validate file size (5MB max)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Image size should be less than 5MB');
+        return;
+      }
+      setImageFile(file);
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    // Prepare update data
+    const updateData: Partial<{
+      firstName: string;
+      lastName: string;
+      address: string;
+      contactNumber: string;
+      birthday: string;
+      bio: string;
+      profileImage: File;
+    }> = {};
+
+    if (formData.firstName !== user?.first_name) {
+      updateData.firstName = formData.firstName;
+    }
+    if (formData.lastName !== user?.last_name) {
+      updateData.lastName = formData.lastName;
+    }
+    if (formData.address !== user?.address) {
+      updateData.address = formData.address;
+    }
+    if (formData.contactNumber !== user?.contact_number) {
+      updateData.contactNumber = formData.contactNumber;
+    }
+    if (formData.birthday !== user?.birthday) {
+      updateData.birthday = formData.birthday;
+    }
+    if (formData.bio !== user?.bio) {
+      updateData.bio = formData.bio;
+    }
+    if (imageFile) {
+      updateData.profileImage = imageFile;
+    }
+
+    // Check if there are any changes
+    if (Object.keys(updateData).length === 0) {
+      toast.info('No changes to save');
+      return;
+    }
+
+    await dispatch(updateUserProfile(updateData));
+  };
+
+  const handleCancel = () => {
+    // Reset form to original values
+    if (user) {
+      setFormData({
+        firstName: user.first_name || '',
+        lastName: user.last_name || '',
+        address: user.address || '',
+        contactNumber: user.contact_number || '',
+        birthday: user.birthday || '',
+        bio: user.bio || '',
+      });
+    }
+    setImageFile(null);
+    setImagePreview(null);
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
@@ -23,20 +178,29 @@ const page = () => {
               <div className="w-[161px] border-b-2 border-[#5272FF] mt-2"></div>
             </div>
 
-            <form>
+            <form onSubmit={handleSubmit}>
               {/* Profile Image Upload */}
               <div
                 className="mb-8 flex items-center gap-6 p-4 border border-[#A1A3AB]/63 rounded-2xl w-[365px] h-[124px]"
                 style={{ boxShadow: '0px 2px 1px 0px rgba(0, 0, 0, 0.05)' }}
               >
                 <div className="relative">
-                  <div className="w-32 h-32 flex items-center justify-center overflow-hidden">
+                  <div className="w-32 h-32 flex items-center justify-center overflow-hidden rounded-full">
                     <Image
-                      src="/img.png"
+                      src={
+                        imagePreview ||
+                        (user?.profile_image
+                          ? user.profile_image.startsWith('http')
+                            ? user.profile_image
+                            : `https://todo-app.pioneeralpha.com${
+                                user.profile_image.startsWith('/') ? '' : '/'
+                              }${user.profile_image}`
+                          : '/img.png')
+                      }
                       alt="Profile"
                       width={96}
                       height={96}
-                      className="object-cover"
+                      className="object-cover rounded-full"
                       unoptimized
                     />
                   </div>
@@ -55,6 +219,7 @@ const page = () => {
                 {/* Upload Button */}
                 <button
                   type="button"
+                  onClick={handleUploadClick}
                   className="flex justify-center items-center gap-2 w-[197px] h-10 py-2 bg-[#5272FF] text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   <Image
@@ -67,6 +232,15 @@ const page = () => {
                   />
                   <span className="capitalize">Upload new photo</span>
                 </button>
+
+                {/* Hidden File Input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
               </div>
 
               {/* Form Fields */}
@@ -82,6 +256,8 @@ const page = () => {
                     <input
                       type="text"
                       name="firstName"
+                      value={formData.firstName}
+                      onChange={handleChange}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
                       placeholder="Enter first name"
                     />
@@ -94,6 +270,8 @@ const page = () => {
                     <input
                       type="text"
                       name="lastName"
+                      value={formData.lastName}
+                      onChange={handleChange}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
                       placeholder="Enter last name"
                     />
@@ -107,7 +285,9 @@ const page = () => {
                   <input
                     type="email"
                     name="email"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
+                    value={user?.email || ''}
+                    disabled
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none bg-gray-100"
                     placeholder="Enter email"
                   />
                 </div>
@@ -120,6 +300,8 @@ const page = () => {
                     <input
                       type="text"
                       name="address"
+                      value={formData.address}
+                      onChange={handleChange}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
                       placeholder="Enter address"
                     />
@@ -132,6 +314,8 @@ const page = () => {
                     <input
                       type="tel"
                       name="contactNumber"
+                      value={formData.contactNumber}
+                      onChange={handleChange}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
                       placeholder="Enter contact number"
                     />
@@ -146,7 +330,9 @@ const page = () => {
                     <input
                       type="text"
                       name="birthday"
-                      placeholder=""
+                      value={formData.birthday}
+                      onChange={handleChange}
+                      placeholder="DD-MM-YYYY"
                       className="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:outline-none"
                     />
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -165,15 +351,18 @@ const page = () => {
                 {/* Action Buttons */}
                 <div className="flex gap-4 justify-center">
                   <button
-                    type="button"
-                    className="bg-[#5272FF] text-white w-[200px] h-10 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+                    type="submit"
+                    disabled={loading}
+                    className="bg-[#5272FF] text-white w-[200px] h-10 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Save Changes
+                    {loading ? 'Saving...' : 'Save Changes'}
                   </button>
 
                   <button
                     type="button"
-                    className="w-[200px] h-10 bg-[#8CA3CD] text-white rounded-lg hover:bg-gray-500 transition-colors flex items-center justify-center"
+                    onClick={handleCancel}
+                    disabled={loading}
+                    className="w-[200px] h-10 bg-[#8CA3CD] text-white rounded-lg hover:bg-gray-500 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Cancel
                   </button>
@@ -187,4 +376,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Profile;

@@ -26,6 +26,21 @@ export interface User {
   email: string;
   first_name: string;
   last_name: string;
+  address?: string;
+  contact_number?: string;
+  birthday?: string;
+  profile_image?: string;
+  bio?: string;
+}
+
+export interface UpdateProfileData {
+  firstName?: string;
+  lastName?: string;
+  address?: string;
+  contactNumber?: string;
+  birthday?: string;
+  bio?: string;
+  profileImage?: File;
 }
 
 export interface SignupData {
@@ -62,6 +77,7 @@ export interface AuthState {
   error: string | null;
   signupSuccess: boolean;
   loginSuccess: boolean;
+  updateSuccess: boolean;
 }
 
 // Initial state
@@ -73,6 +89,7 @@ const initialState: AuthState = {
   error: null,
   signupSuccess: false,
   loginSuccess: false,
+  updateSuccess: false,
 };
 
 // Async thunk for signup
@@ -273,6 +290,79 @@ export const getUserProfile = createAsyncThunk(
   }
 );
 
+// Async thunk for updating user profile
+export const updateUserProfile = createAsyncThunk(
+  'auth/updateUserProfile',
+  async (updateData: UpdateProfileData, { rejectWithValue }) => {
+    try {
+      const API_URL =
+        process.env.NEXT_PUBLIC_API_URL || 'https://todo-app.pioneeralpha.com';
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        return rejectWithValue('No authentication token found');
+      }
+
+      const formData = new FormData();
+
+      // Append only provided fields
+      if (updateData.firstName !== undefined) {
+        formData.append('first_name', updateData.firstName);
+      }
+      if (updateData.lastName !== undefined) {
+        formData.append('last_name', updateData.lastName);
+      }
+      if (updateData.address !== undefined) {
+        formData.append('address', updateData.address);
+      }
+      if (updateData.contactNumber !== undefined) {
+        formData.append('contact_number', updateData.contactNumber);
+      }
+      if (updateData.birthday !== undefined) {
+        formData.append('birthday', updateData.birthday);
+      }
+      if (updateData.bio !== undefined) {
+        formData.append('bio', updateData.bio);
+      }
+      if (updateData.profileImage) {
+        formData.append('profile_image', updateData.profileImage);
+      }
+
+      const response = await fetch(`${API_URL}/api/users/me/`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle errors
+        if (data.detail) {
+          return rejectWithValue(data.detail);
+        }
+        const errorMessages = Object.entries(data)
+          .map(([, errors]) => {
+            if (Array.isArray(errors)) {
+              return errors.join(', ');
+            }
+            return String(errors);
+          })
+          .join(', ');
+        return rejectWithValue(errorMessages || 'Profile update failed');
+      }
+
+      return data;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Network error';
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
 // Auth slice
 const authSlice = createSlice({
   name: 'auth',
@@ -289,6 +379,10 @@ const authSlice = createSlice({
     // Reset login success
     resetLoginSuccess: (state) => {
       state.loginSuccess = false;
+    },
+    // Reset update success
+    resetUpdateSuccess: (state) => {
+      state.updateSuccess = false;
     },
     // Logout
     logout: (state) => {
@@ -417,10 +511,36 @@ const authSlice = createSlice({
         state.loading = false;
         // Don't set error for profile fetch failure (it's optional)
         console.warn('Failed to fetch user profile:', action.payload);
+      })
+      // Update user profile pending
+      .addCase(updateUserProfile.pending, (state) => {
+        state.loading = true;
+        state.updateSuccess = false;
+      })
+      // Update user profile fulfilled
+      .addCase(
+        updateUserProfile.fulfilled,
+        (state, action: PayloadAction<User>) => {
+          state.loading = false;
+          state.user = action.payload;
+          state.updateSuccess = true;
+          state.error = null;
+        }
+      )
+      // Update user profile rejected
+      .addCase(updateUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+        state.updateSuccess = false;
       });
   },
 });
 
-export const { clearError, resetSignupSuccess, resetLoginSuccess, logout } =
-  authSlice.actions;
+export const {
+  clearError,
+  resetSignupSuccess,
+  resetLoginSuccess,
+  resetUpdateSuccess,
+  logout,
+} = authSlice.actions;
 export default authSlice.reducer;

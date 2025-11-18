@@ -11,6 +11,8 @@ import {
   resetSignupSuccess,
 } from '@/libs/feature/authSlice';
 import { toast } from 'sonner';
+import { z } from 'zod';
+import { signupSchema } from '@/libs/validations/authSchema';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -27,6 +29,9 @@ export default function SignupPage() {
     confirmPassword: '',
   });
 
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+
   // Handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -34,38 +39,84 @@ export default function SignupPage() {
       ...prev,
       [name]: value,
     }));
-    // Clear error when user types
+
+    // Validate field if already touched using Zod
+    if (touched[name]) {
+      try {
+        // Validate single field
+        const fieldSchema =
+          signupSchema.shape[name as keyof typeof signupSchema.shape];
+        if (fieldSchema) {
+          fieldSchema.parse(value);
+          setFieldErrors((prev) => ({ ...prev, [name]: '' }));
+        }
+      } catch (err) {
+        if (err instanceof z.ZodError) {
+          setFieldErrors((prev) => ({
+            ...prev,
+            [name]: err.issues[0]?.message || '',
+          }));
+        }
+      }
+    }
+
+    // Clear global error when user types
     if (error) dispatch(clearError());
+  };
+
+  // Handle field blur
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setTouched((prev) => ({ ...prev, [name]: true }));
+
+    // Validate field using Zod
+    try {
+      const fieldSchema =
+        signupSchema.shape[name as keyof typeof signupSchema.shape];
+      if (fieldSchema) {
+        fieldSchema.parse(value);
+        setFieldErrors((prev) => ({ ...prev, [name]: '' }));
+      }
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          [name]: err.issues[0]?.message || '',
+        }));
+      }
+    }
   };
 
   // Handle form submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.email ||
-      !formData.password ||
-      !formData.confirmPassword
-    ) {
-      toast.error('All fields are required');
-      return;
-    }
+    // Mark all fields as touched
+    const allTouched: Record<string, boolean> = {};
+    Object.keys(formData).forEach((key) => {
+      allTouched[key] = true;
+    });
+    setTouched(allTouched);
 
-    if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
+    // Validate all fields using Zod
+    try {
+      signupSchema.parse(formData);
+      // If validation passes, clear errors and submit
+      setFieldErrors({});
+      dispatch(signupUser(formData));
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        // Convert Zod errors to field errors
+        const errors: Record<string, string> = {};
+        err.issues.forEach((issue) => {
+          if (issue.path[0]) {
+            errors[issue.path[0] as string] = issue.message;
+          }
+        });
+        setFieldErrors(errors);
+        toast.error('Please fix all validation errors');
+      }
     }
-
-    if (formData.password.length < 6) {
-      toast.error('Password must be at least 6 characters');
-      return;
-    }
-
-    // Dispatch signup action
-    dispatch(signupUser(formData));
   };
 
   // Show notifications for success/error
@@ -120,10 +171,20 @@ export default function SignupPage() {
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
-                  className="w-full border border-[#D1D5DB] rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+                  onBlur={handleBlur}
+                  className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring ${
+                    touched.firstName && fieldErrors.firstName
+                      ? 'border-red-500 focus:ring-red-300'
+                      : 'border-[#D1D5DB] focus:ring-blue-300'
+                  }`}
                   placeholder="First Name"
                   disabled={loading}
                 />
+                {touched.firstName && fieldErrors.firstName && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {fieldErrors.firstName}
+                  </p>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">
@@ -134,10 +195,20 @@ export default function SignupPage() {
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
-                  className="w-full border border-[#D1D5DB] rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+                  onBlur={handleBlur}
+                  className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring ${
+                    touched.lastName && fieldErrors.lastName
+                      ? 'border-red-500 focus:ring-red-300'
+                      : 'border-[#D1D5DB] focus:ring-blue-300'
+                  }`}
                   placeholder="Last Name"
                   disabled={loading}
                 />
+                {touched.lastName && fieldErrors.lastName && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {fieldErrors.lastName}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -149,10 +220,18 @@ export default function SignupPage() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full border border-[#D1D5DB] rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+                onBlur={handleBlur}
+                className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring ${
+                  touched.email && fieldErrors.email
+                    ? 'border-red-500 focus:ring-red-300'
+                    : 'border-[#D1D5DB] focus:ring-blue-300'
+                }`}
                 placeholder="Enter your email"
                 disabled={loading}
               />
+              {touched.email && fieldErrors.email && (
+                <p className="text-red-500 text-xs mt-1">{fieldErrors.email}</p>
+              )}
             </div>
 
             {/* Password */}
@@ -163,10 +242,20 @@ export default function SignupPage() {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full border border-[#D1D5DB] rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+                onBlur={handleBlur}
+                className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring ${
+                  touched.password && fieldErrors.password
+                    ? 'border-red-500 focus:ring-red-300'
+                    : 'border-[#D1D5DB] focus:ring-blue-300'
+                }`}
                 placeholder="Enter your password"
                 disabled={loading}
               />
+              {touched.password && fieldErrors.password && (
+                <p className="text-red-500 text-xs mt-1">
+                  {fieldErrors.password}
+                </p>
+              )}
             </div>
 
             {/* Confirm Password */}
@@ -179,10 +268,20 @@ export default function SignupPage() {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="w-full border border-[#D1D5DB] rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+                onBlur={handleBlur}
+                className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring ${
+                  touched.confirmPassword && fieldErrors.confirmPassword
+                    ? 'border-red-500 focus:ring-red-300'
+                    : 'border-[#D1D5DB] focus:ring-blue-300'
+                }`}
                 placeholder="Confirm your password"
                 disabled={loading}
               />
+              {touched.confirmPassword && fieldErrors.confirmPassword && (
+                <p className="text-red-500 text-xs mt-1">
+                  {fieldErrors.confirmPassword}
+                </p>
+              )}
             </div>
 
             <button
