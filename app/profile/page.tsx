@@ -165,20 +165,20 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 overflow-hidden">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col h-full overflow-hidden">
         {/* Header */}
         <Header />
 
         {/* Page Content */}
-        <main className="flex-1 p-8 bg-linear-to-br from-blue-50 to-indigo-50">
-          <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-8">
-            <div className="mb-6">
-              <h1 className="text-[24px] font-bold whitespace-nowrap">
+        <main className="flex-1 p-5 bg-linear-to-br from-blue-50 to-indigo-50 overflow-y-auto">
+          <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-5">
+            <div className="mb-3">
+              <h1 className="text-[22px] font-bold whitespace-nowrap">
                 Account Information
               </h1>
               <div className="w-[161px] border-b-2 border-[#5272FF] mt-2"></div>
@@ -187,11 +187,11 @@ const Profile = () => {
             <form onSubmit={handleSubmit}>
               {/* Profile Image Upload */}
               <div
-                className="mb-8 flex items-center gap-6 p-4 border border-[#A1A3AB]/63 rounded-2xl w-[365px] h-[124px]"
+                className="mb-4 flex items-center gap-4 p-3 border border-[#A1A3AB]/63 rounded-2xl w-[350px] h-[105px]"
                 style={{ boxShadow: '0px 2px 1px 0px rgba(0, 0, 0, 0.05)' }}
               >
                 <div className="relative">
-                  <div className="w-32 h-32 flex items-center justify-center overflow-hidden rounded-full">
+                  <div className="w-22 h-22 flex items-center justify-center overflow-hidden rounded-full">
                     <Image
                       src={
                         imagePreview ||
@@ -204,18 +204,18 @@ const Profile = () => {
                           : '/img.png')
                       }
                       alt="Profile"
-                      width={96}
-                      height={96}
+                      width={84}
+                      height={84}
                       className="object-cover rounded-full"
                       unoptimized
                     />
                   </div>
-                  <button type="button" className="absolute bottom-6 right-0">
+                  <button type="button" className="absolute bottom-2 right-0">
                     <Image
                       src="/camera.png"
                       alt="Upload"
-                      width={32}
-                      height={32}
+                      width={26}
+                      height={26}
                       className="object-contain"
                       unoptimized
                     />
@@ -226,13 +226,13 @@ const Profile = () => {
                 <button
                   type="button"
                   onClick={handleUploadClick}
-                  className="flex justify-center items-center gap-2 w-[197px] h-10 py-2 bg-[#5272FF] text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="flex justify-center items-center gap-2 w-[180px] h-9 py-1 bg-[#5272FF] text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   <Image
                     src="/svg.png"
                     alt="Upload icon"
-                    width={16}
-                    height={16}
+                    width={15}
+                    height={15}
                     className="object-contain"
                     unoptimized
                   />
@@ -254,9 +254,9 @@ const Profile = () => {
                 className="p-4 border border-[#A1A3AB]/63 rounded-2xl"
                 style={{ boxShadow: '0px 2px 1px 0px rgba(0, 0, 0, 0.05)' }}
               >
-                <div className="grid grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
                       First Name
                     </label>
                     <input
@@ -264,13 +264,13 @@ const Profile = () => {
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
+                      className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:outline-none"
                       placeholder="Enter first name"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
                       Last Name
                     </label>
                     <input
@@ -278,14 +278,14 @@ const Profile = () => {
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
+                      className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:outline-none"
                       placeholder="Enter last name"
                     />
                   </div>
                 </div>
 
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="mb-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
                     Email
                   </label>
                   <input
@@ -293,14 +293,14 @@ const Profile = () => {
                     name="email"
                     value={user?.email || ''}
                     disabled
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none bg-gray-100"
+                    className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:outline-none bg-gray-100"
                     placeholder="Enter email"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-2 gap-4 mb-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
                       Address
                     </label>
                     <input
@@ -308,13 +308,13 @@ const Profile = () => {
                       name="address"
                       value={formData.address}
                       onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
+                      className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:outline-none"
                       placeholder="Enter address"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
                       Contact Number
                     </label>
                     <input
@@ -322,14 +322,14 @@ const Profile = () => {
                       name="contactNumber"
                       value={formData.contactNumber}
                       onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
+                      className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:outline-none"
                       placeholder="Enter contact number"
                     />
                   </div>
                 </div>
 
-                <div className="mb-8">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="mb-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
                     Birthday
                   </label>
                   <div className="relative">
@@ -338,14 +338,14 @@ const Profile = () => {
                       name="birthday"
                       value={formData.birthday}
                       onChange={handleChange}
-                      className="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:outline-none"
+                      className="w-full p-2 pr-10 text-sm border border-gray-300 rounded-lg focus:outline-none"
                     />
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
                       <Image
                         src="/birthday.png"
                         alt="Birthday"
-                        width={16}
-                        height={16}
+                        width={15}
+                        height={15}
                         className="object-contain"
                         unoptimized
                       />
@@ -358,7 +358,7 @@ const Profile = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="bg-[#5272FF] text-white w-[200px] h-10 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-[#5272FF] text-white w-[180px] h-9 text-sm rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? 'Saving...' : 'Save Changes'}
                   </button>
@@ -367,7 +367,7 @@ const Profile = () => {
                     type="button"
                     onClick={handleCancel}
                     disabled={loading}
-                    className="w-[200px] h-10 bg-[#8CA3CD] text-white rounded-lg hover:bg-gray-500 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-[180px] h-9 bg-[#8CA3CD] text-white text-sm rounded-lg hover:bg-gray-500 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Cancel
                   </button>
