@@ -91,7 +91,7 @@ export default function Sidebar() {
               href={item.href}
               className={`flex items-center gap-3 px-8 py-3 mb-2 transition-colors text-base ${
                 isActive
-                  ? 'bg-linear-to-r from-[#5272FF]/40 to-[#0D224A]/60 text-white font-semibold'
+                  ? 'bg-linear-to-r from-[#5272FF]/40 to-[#0D224A]/60 text-white'
                   : 'text-gray-300 hover:bg-blue-800'
               }`}
             >

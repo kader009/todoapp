@@ -115,7 +115,7 @@ export default function TodoCard({ todo, onEdit, onDelete }: TodoCardProps) {
         </div>
 
         {/* Description */}
-        <p className="text-sm text-gray-600 line-clamp-3">{todo.description}</p>
+        <p className="text-sm text-gray-600 line-clamp-3 py-[14px]">{todo.description}</p>
       </div>
 
       {/* Date, Update, Delete on same line */}
