@@ -37,7 +37,7 @@ export default function TodoCard({ todo, onEdit, onDelete }: TodoCardProps) {
     <div
       ref={setNodeRef}
       style={style}
-      className={`w-[348px] h-[180px] rounded-lg border ${cardBorderColor} p-6 hover:shadow-md transition-shadow bg-white flex flex-col justify-between`}
+  className={`w-full h-[180px] rounded-lg border ${cardBorderColor} p-6 hover:shadow-md transition-shadow bg-white flex flex-col justify-between`}
     >
       <div>
         {/* Title and Priority on same line */}
@@ -92,7 +92,7 @@ export default function TodoCard({ todo, onEdit, onDelete }: TodoCardProps) {
             <span
               className={`${
                 todo.priority === 'low'
-                  ? 'w-[48px] h-[27px]'
+                  ? 'w-12 h-[27px]'
                   : 'w-[84px] h-[27px]'
               } rounded-sm text-xs font-medium flex items-center justify-center ${
                 todo.priority === 'extreme'
@@ -115,7 +115,7 @@ export default function TodoCard({ todo, onEdit, onDelete }: TodoCardProps) {
         </div>
 
         {/* Description */}
-        <p className="text-sm text-gray-600 line-clamp-3 py-[14px]">{todo.description}</p>
+        <p className="text-sm text-gray-600 line-clamp-3 py-3.5">{todo.description}</p>
       </div>
 
       {/* Date, Update, Delete on same line */}

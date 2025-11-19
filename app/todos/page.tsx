@@ -339,7 +339,7 @@ const TodosPage = () => {
         {/* Page Content */}
         <main className="flex-1 p-8 bg-linear-to-br from-blue-50 to-indigo-50 overflow-auto relative">
           <div className="max-w-7xl mx-auto w-full">
-            {/* Header */}
+            
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h1 className="text-[34px] font-bold text-[#0D224A]">Todos</h1>
@@ -455,7 +455,7 @@ const TodosPage = () => {
                     items={getFilteredTodos().map((todo) => todo.id)}
                     strategy={verticalListSortingStrategy}
                   >
-                    <div className="grid grid-cols-[repeat(auto-fill,348px)] gap-4 justify-start">
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-2 w-full">
                       {getFilteredTodos().map((todo) => (
                         <TodoCard
                           key={todo.id}
