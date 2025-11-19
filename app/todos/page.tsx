@@ -290,7 +290,9 @@ const TodosPage = () => {
                   onClick={() => setShowDateFilter(!showDateFilter)}
                   className="h-9 px-4 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 whitespace-nowrap"
                 >
-                  <span className="text-gray-700 text-sm">Filter By</span>
+                  <span className="text-gray-700 text-sm">
+                    {displayTodos.length > 0 ? 'Sort By' : 'Filter By'}
+                  </span>
                   <Image
                     src="/filter.png"
                     alt="Filter"
