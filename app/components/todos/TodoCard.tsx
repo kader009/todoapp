@@ -25,11 +25,19 @@ export default function TodoCard({ todo, onEdit, onDelete }: TodoCardProps) {
     opacity: isDragging ? 0.5 : 1,
   };
 
+  // Card border color based on priority
+  const cardBorderColor =
+    todo.priority === 'extreme'
+      ? 'border-[#FEE2E2]'
+      : todo.priority === 'moderate'
+      ? 'border-[#DCFCE7]'
+      : 'border-[#FEF9C3]';
+
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className="w-[348px] h-[180px] rounded-lg border border-[#FEE2E2] p-6 hover:shadow-md transition-shadow bg-white flex flex-col justify-between"
+      className={`w-[348px] h-[180px] rounded-lg border ${cardBorderColor} p-6 hover:shadow-md transition-shadow bg-white flex flex-col justify-between`}
     >
       <div>
         {/* Title and Priority on same line */}
@@ -82,7 +90,11 @@ export default function TodoCard({ todo, onEdit, onDelete }: TodoCardProps) {
           </div>
           <div className="flex items-center gap-1 shrink-0">
             <span
-              className={`w-[84px] h-[27px] rounded-sm text-xs font-medium flex items-center justify-center ${
+              className={`${
+                todo.priority === 'low'
+                  ? 'w-[48px] h-[27px]'
+                  : 'w-[84px] h-[27px]'
+              } rounded-sm text-xs font-medium flex items-center justify-center ${
                 todo.priority === 'extreme'
                   ? 'bg-[#FEE2E2] text-[#DC2626]'
                   : todo.priority === 'moderate'

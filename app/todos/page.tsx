@@ -88,6 +88,41 @@ const TodosPage = () => {
     setDisplayTodos(todos);
   }, [todos]);
 
+  // Filter todos by selected filters
+  const getFilteredTodos = () => {
+    if (selectedFilter.length === 0) return displayTodos;
+
+    const now = new Date();
+    return displayTodos.filter((todo) => {
+      if (!todo.todo_date) return false;
+      const todoDate = new Date(todo.todo_date);
+      for (const filter of selectedFilter) {
+        if (filter === 'today') {
+          if (
+            todoDate.getFullYear() === now.getFullYear() &&
+            todoDate.getMonth() === now.getMonth() &&
+            todoDate.getDate() === now.getDate()
+          ) {
+            return true;
+          }
+        } else if (filter === '5days') {
+          const diff =
+            (todoDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
+          if (diff >= 0 && diff <= 5) return true;
+        } else if (filter === '10days') {
+          const diff =
+            (todoDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
+          if (diff >= 0 && diff <= 10) return true;
+        } else if (filter === '30days') {
+          const diff =
+            (todoDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
+          if (diff >= 0 && diff <= 30) return true;
+        }
+      }
+      return false;
+    });
+  };
+
   // Fetch user profile if email is empty (only has user_id from JWT)
   useEffect(() => {
     if (user && user.id && !user.email) {
@@ -340,11 +375,11 @@ const TodosPage = () => {
             </div>
 
             {/* Todo List Section */}
-            {loading && displayTodos.length === 0 ? (
+            {loading && getFilteredTodos().length === 0 ? (
               <div className="bg-white rounded-xl shadow-md p-8 w-full min-h-[469px] flex items-center justify-center">
                 <p className="text-gray-500">Loading todos...</p>
               </div>
-            ) : displayTodos.length === 0 ? (
+            ) : getFilteredTodos().length === 0 ? (
               /* Empty State with white background */
               <div className="bg-white rounded-xl shadow-md p-8 w-full min-h-[469px]">
                 <div className="flex flex-col items-center justify-center py-20">
@@ -377,11 +412,11 @@ const TodosPage = () => {
                   onDragEnd={handleDragEnd}
                 >
                   <SortableContext
-                    items={displayTodos.map((todo) => todo.id)}
+                    items={getFilteredTodos().map((todo) => todo.id)}
                     strategy={verticalListSortingStrategy}
                   >
                     <div className="grid grid-cols-[repeat(auto-fill,348px)] gap-4 justify-start">
-                      {displayTodos.map((todo) => (
+                      {getFilteredTodos().map((todo) => (
                         <TodoCard
                           key={todo.id}
                           todo={todo}
