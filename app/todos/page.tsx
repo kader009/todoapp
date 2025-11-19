@@ -35,8 +35,10 @@ import {
   type Todo,
 } from '@/libs/feature/todoSlice';
 import { getUserProfile } from '@/libs/feature/authSlice';
+import { useRouter } from 'next/navigation';
 
 const TodosPage = () => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { todos, loading, error, createSuccess, updateSuccess, deleteSuccess } =
     useAppSelector((state) => state.todos);
@@ -315,6 +317,14 @@ const TodosPage = () => {
     setEditTaskDate('');
     setEditTaskPriority('moderate');
   };
+
+  // Auth protection
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/login');
+    }
+  }, [router]);
 
   return (
     <div className="flex min-h-screen">

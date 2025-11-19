@@ -11,8 +11,10 @@ import {
   resetUpdateSuccess,
   getUserProfile,
 } from '@/libs/feature/authSlice';
+import { useRouter } from 'next/navigation';
 
 const Profile = () => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { user, loading, error, updateSuccess } = useAppSelector(
     (state) => state.auth
@@ -58,6 +60,14 @@ const Profile = () => {
       toast.error(error);
     }
   }, [updateSuccess, error, loading, dispatch]);
+
+  // Auth protection
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/login');
+    }
+  }, [router]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({
