@@ -88,8 +88,8 @@ export default function TaskModal({
                 <Image
                   src="/birthday.png"
                   alt="Date"
-                  width={24}
-                  height={24}
+                  width={14.4}
+                  height={14.4}
                   className="opacity-60"
                   unoptimized
                 />
