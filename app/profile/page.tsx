@@ -332,7 +332,6 @@ const Profile = () => {
                       name="birthday"
                       value={formData.birthday}
                       onChange={handleChange}
-                      placeholder="DD-MM-YYYY"
                       className="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:outline-none"
                     />
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">

@@ -1,5 +1,25 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
+// Helper function to convert any date format to YYYY-MM-DD
+const convertToYYYYMMDD = (dateString: string): string | null => {
+  if (!dateString || !dateString.trim()) return null;
+
+  // Try to parse various date formats
+  const date = new Date(dateString);
+
+  // Check if valid date
+  if (isNaN(date.getTime())) {
+    return null;
+  }
+
+  // Convert to YYYY-MM-DD
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+};
+
 // Types
 export interface Todo {
   id: number;
@@ -17,7 +37,7 @@ export interface CreateTodoData {
   title: string;
   description: string;
   priority: 'extreme' | 'moderate' | 'low';
-  todo_date: string;
+  todo_date?: string;
 }
 
 export interface UpdateTodoData {
@@ -152,7 +172,14 @@ export const createTodo = createAsyncThunk(
       formData.append('title', todoData.title);
       formData.append('description', todoData.description);
       formData.append('priority', todoData.priority);
-      formData.append('todo_date', todoData.todo_date);
+
+      // Convert and append date if provided
+      if (todoData.todo_date) {
+        const convertedDate = convertToYYYYMMDD(todoData.todo_date);
+        if (convertedDate) {
+          formData.append('todo_date', convertedDate);
+        }
+      }
 
       const response = await fetch(`${API_URL}/api/todos/`, {
         method: 'POST',
@@ -213,7 +240,10 @@ export const updateTodo = createAsyncThunk(
         formData.append('priority', todoData.priority);
       }
       if (todoData.todo_date !== undefined) {
-        formData.append('todo_date', todoData.todo_date);
+        const convertedDate = convertToYYYYMMDD(todoData.todo_date);
+        if (convertedDate) {
+          formData.append('todo_date', convertedDate);
+        }
       }
       if (todoData.is_completed !== undefined) {
         formData.append('is_completed', String(todoData.is_completed));
