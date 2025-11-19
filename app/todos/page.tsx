@@ -327,19 +327,18 @@ const TodosPage = () => {
   }, [router]);
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-h-screen">
+      <div className="flex-1 flex flex-col h-full overflow-hidden">
         {/* Header */}
         <Header />
 
         {/* Page Content */}
-        <main className="flex-1 p-8 bg-linear-to-br from-blue-50 to-indigo-50 overflow-auto relative">
+        <main className="flex-1 p-8 bg-linear-to-br from-blue-50 to-indigo-50 overflow-y-auto relative">
           <div className="max-w-7xl mx-auto w-full">
-            
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h1 className="text-[34px] font-bold text-[#0D224A]">Todos</h1>
@@ -416,23 +415,23 @@ const TodosPage = () => {
 
             {/* Todo List Section */}
             {loading && getFilteredTodos().length === 0 ? (
-              <div className="bg-white rounded-xl shadow-md p-8 w-full min-h-[469px] flex items-center justify-center">
+              <div className="bg-white rounded-xl shadow-md p-8 w-full min-h-[350px] flex items-center justify-center">
                 <p className="text-gray-500">Loading todos...</p>
               </div>
             ) : getFilteredTodos().length === 0 ? (
               /* Empty State with white background */
-              <div className="bg-white rounded-xl shadow-md p-8 w-full min-h-[469px]">
-                <div className="flex flex-col items-center justify-center py-20">
-                  <div className="relative mb-6">
+              <div className="bg-white rounded-xl shadow-md p-8 w-full min-h-[380px]">
+                <div className="flex flex-col items-center justify-center py-12">
+                  <div className="relative mb-5">
                     <Image
                       src="/todo.png"
                       alt="No todos"
-                      width={200}
-                      height={200}
+                      width={170}
+                      height={170}
                       unoptimized
                     />
                   </div>
-                  <p className="text-[24px] text-[#201F1E] font-medium">
+                  <p className="text-[22px] text-[#201F1E] font-medium">
                     No todos yet
                   </p>
                 </div>
@@ -455,7 +454,7 @@ const TodosPage = () => {
                     items={getFilteredTodos().map((todo) => todo.id)}
                     strategy={verticalListSortingStrategy}
                   >
-                    <div className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-2 w-full">
+                    <div className="grid grid-cols-3 gap-4 w-full">
                       {getFilteredTodos().map((todo) => (
                         <TodoCard
                           key={todo.id}
