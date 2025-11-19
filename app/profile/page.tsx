@@ -31,7 +31,6 @@ const Profile = () => {
     bio: '',
   });
 
-  // Initialize form data when component mounts or user changes
   useEffect(() => {
     if (user) {
       setFormData((prev) => ({
@@ -45,17 +44,14 @@ const Profile = () => {
       }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id]); // Only re-run when user ID changes
+  }, [user?.id]);
 
-  // Handle success/error notifications
   useEffect(() => {
     if (updateSuccess) {
       toast.success('Profile updated successfully!');
       dispatch(resetUpdateSuccess());
-      // Clear image preview
       setImagePreview(null);
       setImageFile(null);
-      // Refresh user profile to get updated data
       dispatch(getUserProfile());
     }
     if (error && !loading) {

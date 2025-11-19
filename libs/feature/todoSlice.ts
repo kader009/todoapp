@@ -1,10 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
-// Helper function to convert any date format to YYYY-MM-DD
 const convertToYYYYMMDD = (dateString: string): string | null => {
   if (!dateString || !dateString.trim()) return null;
 
-  // Try to parse various date formats
   const date = new Date(dateString);
 
   // Check if valid date

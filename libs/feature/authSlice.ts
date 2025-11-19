@@ -66,7 +66,7 @@ export interface LoginData {
 export interface LoginResponse {
   access: string;
   refresh: string;
-  user?: User; // Make user optional since backend might not return it
+  user?: User;
 }
 
 export interface AuthState {
@@ -222,7 +222,6 @@ export const getUserProfile = createAsyncThunk(
       let response;
       let endpointUsed = '';
 
-      // Try 1: /api/users/me/ (most common for current user)
       console.log('Trying endpoint: /api/users/me/');
       response = await fetch(`${API_URL}/api/users/me/`, {
         method: 'GET',
@@ -233,7 +232,6 @@ export const getUserProfile = createAsyncThunk(
       endpointUsed = '/api/users/me/';
       console.log('Response status:', response.status);
 
-      // Try 2: /api/users/profile/ (if 404)
       if (response.status === 404) {
         console.log('Trying endpoint: /api/users/profile/');
         response = await fetch(`${API_URL}/api/users/profile/`, {
@@ -246,7 +244,6 @@ export const getUserProfile = createAsyncThunk(
         console.log('Response status:', response.status);
       }
 
-      // Try 3: /api/users/{userId}/ (if still 404 and we have userId)
       if (response.status === 404 && userId) {
         console.log(`Trying endpoint: /api/users/${userId}/`);
         response = await fetch(`${API_URL}/api/users/${userId}/`, {
@@ -444,17 +441,14 @@ const authSlice = createSlice({
 
           // Try multiple sources for user data
           if (action.payload.user) {
-            // Source 1: Direct from API response
             console.log('User data from login response:', action.payload.user);
             state.user = action.payload.user;
           } else {
-            // Source 2: Decode JWT token
             console.log('No user in response, decoding JWT...');
             const tokenData = decodeJWT(action.payload.access);
             console.log('Decoded JWT data:', tokenData);
 
             if (tokenData) {
-              // Try to extract user info from JWT
               const userId = tokenData.user_id || tokenData.id || tokenData.sub;
               const userEmail = tokenData.email || tokenData.username;
               const firstName =
@@ -462,8 +456,6 @@ const authSlice = createSlice({
               const lastName = tokenData.last_name || tokenData.lastName || '';
 
               if (userId) {
-                // Create temporary user object with available data
-                // getUserProfile will be called from login page to get full data
                 state.user = {
                   id: Number(userId),
                   email: userEmail ? String(userEmail) : '',
@@ -509,7 +501,6 @@ const authSlice = createSlice({
       // Get user profile rejected
       .addCase(getUserProfile.rejected, (state, action) => {
         state.loading = false;
-        // Don't set error for profile fetch failure (it's optional)
         console.warn('Failed to fetch user profile:', action.payload);
       })
       // Update user profile pending

@@ -12,22 +12,17 @@ export default function Sidebar() {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  // Get user data from Redux (persisted)
   const { user, loading } = useAppSelector((state) => state.auth);
 
   const handleLogout = () => {
-    // Clear tokens from localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
 
-    // Clear Redux persisted state
     dispatch(logout());
     dispatch(clearTodos());
 
-    // Show notification
     toast.success('Logged out successfully!');
 
-    // Redirect to login
     router.push('/login');
   };
 
@@ -62,21 +57,25 @@ export default function Sidebar() {
         <h3 className="font-semibold">
           {loading ? (
             <span className="animate-pulse">Loading...</span>
-          ) : user?.first_name && user?.last_name ? (
-            `${user.first_name} ${user.last_name}`
-          ) : user?.email ? (
-            user.email.split('@')[0]
           ) : user?.id ? (
-            `User #${user.id}`
+            user?.first_name && user?.last_name ? (
+              `${user.first_name} ${user.last_name}`
+            ) : user?.email ? (
+              user.email.split('@')[0]
+            ) : (
+              `User #${user.id}`
+            )
           ) : (
-            'User'
+            'amanuel'
           )}
         </h3>
         <p className="text-sm text-gray-300">
           {loading ? (
             <span className="animate-pulse">Loading...</span>
-          ) : (
+          ) : user?.id ? (
             user?.email || 'Please wait...'
+          ) : (
+            'amanuel@gmail.com'
           )}
         </p>
       </div>

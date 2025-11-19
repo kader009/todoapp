@@ -41,10 +41,8 @@ const TodosPage = () => {
   const { todos, loading, error, createSuccess, updateSuccess, deleteSuccess } =
     useAppSelector((state) => state.todos);
 
-  // Get user data to check if profile needs to be fetched
   const { user } = useAppSelector((state) => state.auth);
 
-  // Local state for reordered todos (visual only)
   const [displayTodos, setDisplayTodos] = useState<Todo[]>([]);
 
   // Drag and drop sensors
@@ -83,7 +81,6 @@ const TodosPage = () => {
     dispatch(getTodos({}));
   }, [dispatch]);
 
-  // Sync displayTodos with Redux todos
   useEffect(() => {
     setDisplayTodos(todos);
   }, [todos]);
@@ -123,7 +120,6 @@ const TodosPage = () => {
     });
   };
 
-  // Fetch user profile if email is empty (only has user_id from JWT)
   useEffect(() => {
     if (user && user.id && !user.email) {
       console.log('User profile incomplete, fetching full data...');
@@ -149,7 +145,6 @@ const TodosPage = () => {
     if (createSuccess) {
       toast.success('Todo created successfully!');
       dispatch(resetCreateSuccess());
-      // Close modal and reset form after a short delay
       setTimeout(() => {
         setShowNewTaskModal(false);
         setNewTaskTitle('');
@@ -172,7 +167,6 @@ const TodosPage = () => {
     if (updateSuccess) {
       toast.success('Todo updated successfully!');
       dispatch(resetUpdateSuccess());
-      // Close modal and reset form after a short delay
       setTimeout(() => {
         setShowEditTaskModal(false);
         setEditTaskId(null);
@@ -200,7 +194,6 @@ const TodosPage = () => {
     );
   };
 
-  // Handle drag end - Visual reorder only (no API call)
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
