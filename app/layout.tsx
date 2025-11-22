@@ -12,6 +12,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Todo App',
   description: 'Get your todo with simple way.',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+  },
 };
 
 export default function RootLayout({

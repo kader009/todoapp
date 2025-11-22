@@ -137,20 +137,20 @@ export default function SignupPage() {
   }, [error]);
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 gap-[193px]">
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-[100px] lg:gap-[193px]">
       {/* Left Illustration */}
-      <div className="bg-[#E2ECF8] w-[606px] flex items-center justify-center p-10">
+      <div className="hidden md:flex bg-[#E2ECF8] w-full items-center justify-center p-10">
         <Image
           src="/registerimage.png"
           alt="Signup Illustration"
-          className="h-auto w-full"
+          className="h-auto w-full max-w-[613px]"
           width={613}
           height={344}
         />
       </div>
 
       {/* Right Signup Form */}
-      <div className="flex items-center justify-center p-8 pr-[193px]">
+      <div className="flex items-center justify-center p-6 md:p-8 md:pr-[50px] lg:pr-[193px]">
         <div className="w-full max-w-md space-y-6">
           <div className="text-center">
             <h1 className="text-[30px] font-bold">Create your account</h1>

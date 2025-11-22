@@ -166,8 +166,10 @@ const Profile = () => {
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
-      {/* Sidebar */}
-      <Sidebar />
+      {/* Sidebar - Hidden on mobile/tablet, visible on desktop */}
+      <div className="hidden lg:block">
+        <Sidebar />
+      </div>
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
@@ -175,8 +177,8 @@ const Profile = () => {
         <Header />
 
         {/* Page Content */}
-        <main className="flex-1 p-5 bg-linear-to-br from-blue-50 to-indigo-50 overflow-y-auto">
-          <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-5">
+        <main className="flex-1 p-4 md:p-5 bg-linear-to-br from-blue-50 to-indigo-50 overflow-y-auto">
+          <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-4 md:p-5">
             <div className="mb-3">
               <h1 className="text-[22px] font-bold whitespace-nowrap">
                 Account Information
@@ -187,10 +189,10 @@ const Profile = () => {
             <form onSubmit={handleSubmit}>
               {/* Profile Image Upload */}
               <div
-                className="mb-4 flex items-center gap-4 p-3 border border-[#A1A3AB]/63 rounded-2xl w-[350px] h-[105px]"
+                className="mb-4 flex items-center gap-4 p-3 border border-[#A1A3AB]/63 rounded-2xl w-full md:w-[350px] h-[105px]"
                 style={{ boxShadow: '0px 2px 1px 0px rgba(0, 0, 0, 0.05)' }}
               >
-                <div className="relative">
+                <div className="relative shrink-0">
                   <div className="w-22 h-22 flex items-center justify-center overflow-hidden rounded-full">
                     <Image
                       src={
@@ -206,7 +208,7 @@ const Profile = () => {
                       alt="Profile"
                       width={84}
                       height={84}
-                      className="object-cover rounded-full"
+                      className="object-cover rounded-full w-[84px] h-[84px]"
                       unoptimized
                     />
                   </div>
@@ -226,7 +228,7 @@ const Profile = () => {
                 <button
                   type="button"
                   onClick={handleUploadClick}
-                  className="flex justify-center items-center gap-2 w-[180px] h-9 py-1 bg-[#5272FF] text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
+                  className="flex justify-center items-center gap-2 w-full h-9 py-1 bg-[#5272FF] text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   <Image
                     src="/svg.png"
@@ -254,7 +256,7 @@ const Profile = () => {
                 className="p-4 border border-[#A1A3AB]/63 rounded-2xl"
                 style={{ boxShadow: '0px 2px 1px 0px rgba(0, 0, 0, 0.05)' }}
               >
-                <div className="grid grid-cols-2 gap-4 mb-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1.5">
                       First Name
@@ -298,7 +300,7 @@ const Profile = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1.5">
                       Address
@@ -354,11 +356,11 @@ const Profile = () => {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex gap-4 justify-center">
+                <div className="flex flex-col md:flex-row gap-4 justify-center mt-6">
                   <button
                     type="submit"
                     disabled={loading}
-                    className="bg-[#5272FF] text-white w-[180px] h-9 text-sm rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-[#5272FF] text-white w-full md:w-[180px] h-9 text-sm rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? 'Saving...' : 'Save Changes'}
                   </button>
@@ -367,7 +369,7 @@ const Profile = () => {
                     type="button"
                     onClick={handleCancel}
                     disabled={loading}
-                    className="w-[180px] h-9 bg-[#8CA3CD] text-white text-sm rounded-lg hover:bg-gray-500 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full md:w-[180px] h-9 bg-[#8CA3CD] text-white text-sm rounded-lg hover:bg-gray-500 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Cancel
                   </button>

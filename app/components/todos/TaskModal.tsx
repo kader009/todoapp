@@ -25,7 +25,7 @@ export default function TaskModal({
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl p-8 w-[591px] h-[653px] shadow-2xl overflow-y-auto"
+        className="bg-white rounded-2xl p-4 md:p-8 w-[95%] md:w-[591px] h-auto max-h-[90vh] shadow-2xl overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

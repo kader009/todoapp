@@ -10,6 +10,7 @@ export interface TodoCardProps {
 export interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
+  className?: string;
 }
 
 export interface FilterButtonsProps {

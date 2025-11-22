@@ -328,8 +328,10 @@ const TodosPage = () => {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* Sidebar */}
-      <Sidebar />
+      {/* Sidebar - Hidden on mobile/tablet, visible on desktop */}
+      <div className="hidden lg:block">
+        <Sidebar />
+      </div>
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
@@ -337,17 +339,19 @@ const TodosPage = () => {
         <Header />
 
         {/* Page Content */}
-        <main className="flex-1 p-8 bg-linear-to-br from-blue-50 to-indigo-50 overflow-y-auto relative">
+        <main className="flex-1 p-4 md:p-8 bg-linear-to-br from-blue-50 to-indigo-50 overflow-y-auto relative">
           <div className="max-w-7xl mx-auto w-full">
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 gap-4">
               <div>
-                <h1 className="text-[34px] font-bold text-[#0D224A]">Todos</h1>
+                <h1 className="text-[28px] md:text-[34px] font-bold text-[#0D224A]">
+                  Todos
+                </h1>
                 <div className="w-[68px] border-b-2 border-[#5272FF] mt-2"></div>
               </div>
 
               <button
                 onClick={() => setShowNewTaskModal(true)}
-                className="bg-[#5272FF] text-white w-[134px] h-[42px] rounded-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
+                className="bg-[#5272FF] text-white w-full md:w-[134px] h-[42px] rounded-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
               >
                 <Plus size={20} />
                 New Task
@@ -355,14 +359,18 @@ const TodosPage = () => {
             </div>
 
             {/* Search & Filter Bar */}
-            <div className="flex items-center gap-4 mb-6">
-              <SearchBar value={searchQuery} onChange={setSearchQuery} />
+            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 mb-6">
+              <SearchBar
+                value={searchQuery}
+                onChange={setSearchQuery}
+                className="flex-1"
+              />
 
               {/* Date Filter Button with Dropdown */}
               <div className="relative">
                 <button
                   onClick={() => setShowDateFilter(!showDateFilter)}
-                  className="h-9 px-4 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 whitespace-nowrap"
+                  className="h-[42px] min-h-[42px] w-full md:w-auto px-4 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center md:justify-start gap-2 whitespace-nowrap"
                 >
                   <span className="text-gray-700 text-sm">
                     {displayTodos.length > 0 ? 'Sort By' : 'Filter By'}
@@ -379,7 +387,7 @@ const TodosPage = () => {
 
                 {/* Date Filter Dropdown */}
                 {showDateFilter && (
-                  <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg w-64 z-10">
+                  <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg w-full md:w-64 z-10">
                     <div className="px-4 py-3">
                       <h3 className="font-semibold text-left text-gray-700">
                         Date
@@ -454,7 +462,7 @@ const TodosPage = () => {
                     items={getFilteredTodos().map((todo) => todo.id)}
                     strategy={verticalListSortingStrategy}
                   >
-                    <div className="grid grid-cols-3 gap-4 w-full">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
                       {getFilteredTodos().map((todo) => (
                         <TodoCard
                           key={todo.id}

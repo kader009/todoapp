@@ -137,19 +137,19 @@ export default function LoginPage() {
   }, [error]);
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 gap-[193px]">
-      <div className="bg-[#E2ECF8] flex items-center justify-center p-10 w-[606px]">
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-[100px] lg:gap-[193px]">
+      <div className="hidden md:flex bg-[#E2ECF8] items-center justify-center p-10 w-full">
         <Image
           src="/loginimage.png"
           alt="Illustration"
-          className="h-auto w-full"
+          className="h-auto w-full max-w-[663px]"
           width={663}
           height={414}
         />
       </div>
 
       {/* Right Login Form */}
-      <div className="flex items-center justify-center p-8 pr-[193px]">
+      <div className="flex items-center justify-center p-6 md:p-8 md:pr-[50px] lg:pr-[193px]">
         <div className="w-full max-w-md space-y-6">
           <div className="text-center">
             <h1 className="text-[30px] font-bold">Log in to your account</h1>
