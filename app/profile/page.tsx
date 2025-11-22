@@ -12,6 +12,7 @@ import {
   getUserProfile,
 } from '@/libs/feature/authSlice';
 import { useRouter } from 'next/navigation';
+import { parseFlexibleDate } from '@/utils/dateUtils';
 
 const Profile = () => {
   const router = useRouter();
@@ -340,6 +341,20 @@ const Profile = () => {
                       name="birthday"
                       value={formData.birthday}
                       onChange={handleChange}
+                      onBlur={(e) => {
+                        const value = e.target.value.trim();
+                        if (value) {
+                          try {
+                            const parsedDate = parseFlexibleDate(value);
+                            setFormData((prev) => ({
+                              ...prev,
+                              birthday: parsedDate,
+                            }));
+                          } catch (error) {
+                            // Keep the original value if parsing fails
+                          }
+                        }
+                      }}
                       className="w-full p-2 pr-10 text-sm border border-gray-300 rounded-lg focus:outline-none"
                     />
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
