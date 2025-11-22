@@ -38,26 +38,28 @@ export default function DateFilterDropdown({
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg w-full md:w-64 z-10">
-          <div className="px-4 py-3">
-            <h3 className="font-semibold text-left text-gray-700">Date</h3>
+        <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg w-[180px] z-10">
+          <div className="px-3 py-2">
+            <h3 className="font-semibold text-left text-gray-700 text-sm">
+              Date
+            </h3>
           </div>
-          <div className="mx-4 border-b border-gray-200"></div>
+          <div className="mx-3 border-b border-gray-200"></div>
 
-          <div className="p-4">
+          <div className="px-3 py-2 space-y-1">
             {DATE_FILTERS.map((filter) => (
               <label
                 key={filter.id}
-                className="flex items-center gap-2 mb-1 cursor-pointer hover:bg-gray-50 p-2 rounded"
+                className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 px-1 py-0.5 rounded"
               >
                 <input
                   type="checkbox"
                   checked={selectedFilters.includes(filter.id)}
                   onChange={() => onFilterChange(filter.id)}
-                  className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                  className="w-3.5 h-3.5 text-blue-600 rounded focus:ring-1 focus:ring-blue-500"
                   aria-label={filter.label}
                 />
-                <span className="text-gray-700">{filter.label}</span>
+                <span className="text-gray-700 text-sm">{filter.label}</span>
               </label>
             ))}
           </div>

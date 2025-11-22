@@ -350,9 +350,7 @@ const Profile = () => {
                               ...prev,
                               birthday: parsedDate,
                             }));
-                          } catch (error) {
-                            // Keep the original value if parsing fails
-                          }
+                          } catch (error) {}
                         }
                       }}
                       className="w-full p-2 pr-10 text-sm border border-gray-300 rounded-lg focus:outline-none"

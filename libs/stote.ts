@@ -8,7 +8,7 @@ import todoReducer from './feature/todoSlice';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth', 'todos'], // Only persist auth and todos
+  whitelist: ['auth', 'todos'],
 };
 
 // Combine reducers
