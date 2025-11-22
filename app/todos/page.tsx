@@ -195,9 +195,30 @@ const TodosPage = () => {
   };
 
   const handleDeleteTodo = (id: number) => {
-    if (window.confirm('Are you sure you want to delete this todo?')) {
-      dispatch(deleteTodo(id));
-    }
+    toast.custom((t) => (
+      <div className="bg-white p-4 rounded-lg shadow-lg border border-gray-200 flex flex-col gap-3 min-w-[300px]">
+        <p className="font-medium text-gray-800">
+          Are you sure you want to delete this todo?
+        </p>
+        <div className="flex gap-2 justify-end">
+          <button
+            onClick={() => toast.dismiss(t)}
+            className="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => {
+              dispatch(deleteTodo(id));
+              toast.dismiss(t);
+            }}
+            className="px-3 py-1.5 text-sm bg-red-500 text-white hover:bg-red-600 rounded-md transition-colors"
+          >
+            Yes
+          </button>
+        </div>
+      </div>
+    ));
   };
 
   const handleCancelEdit = () => {
@@ -231,7 +252,9 @@ const TodosPage = () => {
               />
               <DateFilterDropdown
                 isOpen={filters.showDateFilter}
-                onToggle={() => filters.setShowDateFilter(!filters.showDateFilter)}
+                onToggle={() =>
+                  filters.setShowDateFilter(!filters.showDateFilter)
+                }
                 selectedFilters={filters.selectedFilters}
                 onFilterChange={filters.toggleFilter}
                 todosCount={displayTodos.length}
