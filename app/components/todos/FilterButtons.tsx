@@ -1,11 +1,7 @@
 import Image from 'next/image';
 import { Plus } from 'lucide-react';
 
-interface FilterButtonsProps {
-  showDateFilter: boolean;
-  onToggleDateFilter: () => void;
-  onNewTask: () => void;
-}
+import { FilterButtonsProps } from '@/types/components';
 
 export default function FilterButtons({
   showDateFilter,

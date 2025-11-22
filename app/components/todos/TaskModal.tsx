@@ -1,21 +1,6 @@
-import { FormEvent } from 'react';
 import Image from 'next/image';
 
-interface TaskModalProps {
-  isOpen: boolean;
-  mode: 'new' | 'edit';
-  title: string;
-  description: string;
-  date: string;
-  priority: 'extreme' | 'moderate' | 'low';
-  loading: boolean;
-  onClose: () => void;
-  onSubmit: (e: FormEvent) => void;
-  onTitleChange: (value: string) => void;
-  onDescriptionChange: (value: string) => void;
-  onDateChange: (value: string) => void;
-  onPriorityChange: (value: 'extreme' | 'moderate' | 'low') => void;
-}
+import { TaskModalProps } from '@/types/components';
 
 export default function TaskModal({
   isOpen,
@@ -40,7 +25,7 @@ export default function TaskModal({
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl p-8 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-2xl p-8 w-[591px] h-[653px] shadow-2xl overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

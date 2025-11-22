@@ -1,9 +1,6 @@
 import { Search } from 'lucide-react';
 
-interface SearchBarProps {
-  value: string;
-  onChange: (value: string) => void;
-}
+import { SearchBarProps } from '@/types/components';
 
 export default function SearchBar({ value, onChange }: SearchBarProps) {
   return (

@@ -32,8 +32,8 @@ import {
   resetCreateSuccess,
   resetUpdateSuccess,
   resetDeleteSuccess,
-  type Todo,
 } from '@/libs/feature/todoSlice';
+import { Todo } from '@/types/todo';
 import { getUserProfile } from '@/libs/feature/authSlice';
 import { useRouter } from 'next/navigation';
 

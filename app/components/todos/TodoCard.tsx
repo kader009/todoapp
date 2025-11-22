@@ -1,13 +1,7 @@
 import Image from 'next/image';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { type Todo } from '@/libs/feature/todoSlice';
-
-interface TodoCardProps {
-  todo: Todo;
-  onEdit: (todo: Todo) => void;
-  onDelete: (id: number) => void;
-}
+import { TodoCardProps } from '@/types/components';
 
 export default function TodoCard({ todo, onEdit, onDelete }: TodoCardProps) {
   const {
@@ -37,7 +31,7 @@ export default function TodoCard({ todo, onEdit, onDelete }: TodoCardProps) {
     <div
       ref={setNodeRef}
       style={style}
-  className={`w-full h-[180px] rounded-lg border ${cardBorderColor} p-6 hover:shadow-md transition-shadow bg-white flex flex-col justify-between`}
+      className={`w-full h-[180px] rounded-lg border ${cardBorderColor} p-6 hover:shadow-md transition-shadow bg-white flex flex-col justify-between`}
     >
       <div>
         {/* Title and Priority on same line */}
@@ -91,9 +85,7 @@ export default function TodoCard({ todo, onEdit, onDelete }: TodoCardProps) {
           <div className="flex items-center gap-1 shrink-0">
             <span
               className={`${
-                todo.priority === 'low'
-                  ? 'w-12 h-[27px]'
-                  : 'w-[84px] h-[27px]'
+                todo.priority === 'low' ? 'w-12 h-[27px]' : 'w-[84px] h-[27px]'
               } rounded-sm text-xs font-medium flex items-center justify-center ${
                 todo.priority === 'extreme'
                   ? 'bg-[#FEE2E2] text-[#DC2626]'
@@ -115,7 +107,9 @@ export default function TodoCard({ todo, onEdit, onDelete }: TodoCardProps) {
         </div>
 
         {/* Description */}
-        <p className="text-sm text-gray-600 line-clamp-3 py-3.5">{todo.description}</p>
+        <p className="text-sm text-gray-600 line-clamp-3 py-3.5">
+          {todo.description}
+        </p>
       </div>
 
       {/* Date, Update, Delete on same line */}
