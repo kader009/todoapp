@@ -1,8 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { Plus } from 'lucide-react';
-import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import {
   DndContext,
   closestCenter,
@@ -18,11 +17,16 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import SearchBar from '../components/todos/SearchBar';
 import TodoCard from '../components/todos/TodoCard';
 import TaskModal from '../components/todos/TaskModal';
+import TodoHeader from '../components/todos/TodoHeader';
+import DateFilterDropdown from '../components/todos/DateFilterDropdown';
+import EmptyTodoState from '../components/todos/EmptyTodoState';
+
 import { useAppDispatch, useAppSelector } from '@/libs/hook';
 import {
   getTodos,
@@ -33,19 +37,28 @@ import {
   resetUpdateSuccess,
   resetDeleteSuccess,
 } from '@/libs/feature/todoSlice';
-import { Todo } from '@/types/todo';
 import { getUserProfile } from '@/libs/feature/authSlice';
-import { useRouter } from 'next/navigation';
+import { Todo } from '@/types/todo';
+import { useTaskForm } from '@/hooks/useTaskForm';
+import { useTodoFilters } from '@/hooks/useTodoFilters';
+import { parseFlexibleDate } from '@/utils/dateUtils';
 
 const TodosPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { todos, loading, error, createSuccess, updateSuccess, deleteSuccess } =
     useAppSelector((state) => state.todos);
-
   const { user } = useAppSelector((state) => state.auth);
 
   const [displayTodos, setDisplayTodos] = useState<Todo[]>([]);
+  const [showNewTaskModal, setShowNewTaskModal] = useState(false);
+  const [showEditTaskModal, setShowEditTaskModal] = useState(false);
+  const [editTaskId, setEditTaskId] = useState<number | null>(null);
+
+  // Custom hooks
+  const newTask = useTaskForm();
+  const editTask = useTaskForm();
+  const filters = useTodoFilters(displayTodos);
 
   // Drag and drop sensors
   const sensors = useSensors(
@@ -54,29 +67,6 @@ const TodosPage = () => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
-
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showDateFilter, setShowDateFilter] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState<string[]>([]);
-  const [showNewTaskModal, setShowNewTaskModal] = useState(false);
-  const [showEditTaskModal, setShowEditTaskModal] = useState(false);
-
-  // Form state for new task
-  const [newTaskTitle, setNewTaskTitle] = useState('');
-  const [newTaskDescription, setNewTaskDescription] = useState('');
-  const [newTaskDate, setNewTaskDate] = useState('');
-  const [newTaskPriority, setNewTaskPriority] = useState<
-    'extreme' | 'moderate' | 'low'
-  >('moderate');
-
-  // Form state for edit task
-  const [editTaskId, setEditTaskId] = useState<number | null>(null);
-  const [editTaskTitle, setEditTaskTitle] = useState('');
-  const [editTaskDescription, setEditTaskDescription] = useState('');
-  const [editTaskDate, setEditTaskDate] = useState('');
-  const [editTaskPriority, setEditTaskPriority] = useState<
-    'extreme' | 'moderate' | 'low'
-  >('moderate');
 
   // Fetch todos on mount
   useEffect(() => {
@@ -87,44 +77,9 @@ const TodosPage = () => {
     setDisplayTodos(todos);
   }, [todos]);
 
-  // Filter todos by selected filters
-  const getFilteredTodos = () => {
-    if (selectedFilter.length === 0) return displayTodos;
-
-    const now = new Date();
-    return displayTodos.filter((todo) => {
-      if (!todo.todo_date) return false;
-      const todoDate = new Date(todo.todo_date);
-      for (const filter of selectedFilter) {
-        if (filter === 'today') {
-          if (
-            todoDate.getFullYear() === now.getFullYear() &&
-            todoDate.getMonth() === now.getMonth() &&
-            todoDate.getDate() === now.getDate()
-          ) {
-            return true;
-          }
-        } else if (filter === '5days') {
-          const diff =
-            (todoDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
-          if (diff >= 0 && diff <= 5) return true;
-        } else if (filter === '10days') {
-          const diff =
-            (todoDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
-          if (diff >= 0 && diff <= 10) return true;
-        } else if (filter === '30days') {
-          const diff =
-            (todoDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
-          if (diff >= 0 && diff <= 30) return true;
-        }
-      }
-      return false;
-    });
-  };
-
+  // Fetch user profile if incomplete
   useEffect(() => {
     if (user && user.id && !user.email) {
-      console.log('User profile incomplete, fetching full data...');
       dispatch(getUserProfile());
     }
   }, [user, dispatch]);
@@ -132,15 +87,15 @@ const TodosPage = () => {
   // Handle search with debounce
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (searchQuery) {
-        dispatch(getTodos({ search: searchQuery }));
+      if (filters.searchQuery) {
+        dispatch(getTodos({ search: filters.searchQuery }));
       } else {
         dispatch(getTodos({}));
       }
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, dispatch]);
+  }, [filters.searchQuery, dispatch]);
 
   // Handle create success
   useEffect(() => {
@@ -149,20 +104,10 @@ const TodosPage = () => {
       dispatch(resetCreateSuccess());
       setTimeout(() => {
         setShowNewTaskModal(false);
-        setNewTaskTitle('');
-        setNewTaskDescription('');
-        setNewTaskDate('');
-        setNewTaskPriority('moderate');
+        newTask.resetForm();
       }, 500);
     }
-  }, [createSuccess, dispatch]);
-
-  // Handle error
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-    }
-  }, [error]);
+  }, [createSuccess, dispatch, newTask]);
 
   // Handle update success
   useEffect(() => {
@@ -172,13 +117,10 @@ const TodosPage = () => {
       setTimeout(() => {
         setShowEditTaskModal(false);
         setEditTaskId(null);
-        setEditTaskTitle('');
-        setEditTaskDescription('');
-        setEditTaskDate('');
-        setEditTaskPriority('moderate');
+        editTask.resetForm();
       }, 500);
     }
-  }, [updateSuccess, dispatch]);
+  }, [updateSuccess, dispatch, editTask]);
 
   // Handle delete success
   useEffect(() => {
@@ -188,17 +130,23 @@ const TodosPage = () => {
     }
   }, [deleteSuccess, dispatch]);
 
-  const handleToggleFilter = (filter: string) => {
-    setSelectedFilter((prev) =>
-      prev.includes(filter)
-        ? prev.filter((f) => f !== filter)
-        : [...prev, filter]
-    );
-  };
+  // Handle error
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
+
+  // Check authentication
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/login');
+    }
+  }, [router]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-
     if (over && active.id !== over.id) {
       setDisplayTodos((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
@@ -208,123 +156,55 @@ const TodosPage = () => {
     }
   };
 
-  // Flexible date parser
-  function parseFlexibleDate(input: string): string {
-    if (!input || !input.trim()) {
-      const today = new Date();
-      return today.toISOString().slice(0, 10);
-    }
-    const normalized = input.trim().replace(/\./g, '-').replace(/\//g, '-');
-    const parts = normalized.split('-');
-    if (parts.length === 3) {
-      // If year is 2 digits, assume 20xx
-      if (parts[2].length === 2) {
-        parts[2] = '20' + parts[2];
-      }
-      // If year is first (YYYY-MM-DD), return as is
-      if (parts[0].length === 4) {
-        return `${parts[0]}-${parts[1].padStart(2, '0')}-${parts[2].padStart(
-          2,
-          '0'
-        )}`;
-      }
-      // If year is last (DD-MM-YY or DD-MM-YYYY)
-      if (parts[2].length === 4) {
-        return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(
-          2,
-          '0'
-        )}`;
-      }
-    }
-    // Fallback: try native Date
-    const d = new Date(input);
-    if (!isNaN(d.getTime())) {
-      return d.toISOString().slice(0, 10);
-    }
-    // If all fails, use today
-    return new Date().toISOString().slice(0, 10);
-  }
-
-  const handleAddTodo = async (e: React.FormEvent) => {
+  const handleAddTodo = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validation
-    if (!newTaskTitle.trim()) {
-      toast.error('Please enter a task title');
-      return;
-    }
-    if (!newTaskDescription.trim()) {
-      toast.error('Please enter a task description');
-      return;
-    }
-
-    // Create todo
-    await dispatch(
+    const parsedDate = parseFlexibleDate(newTask.formData.date);
+    dispatch(
       createTodo({
-        title: newTaskTitle,
-        description: newTaskDescription,
-        priority: newTaskPriority,
-        todo_date: parseFlexibleDate(newTaskDate),
+        title: newTask.formData.title,
+        description: newTask.formData.description,
+        todo_date: parsedDate,
+        priority: newTask.formData.priority,
       })
     );
-  };
-
-  const handleDeleteTodo = async (id: number) => {
-    await dispatch(deleteTodo(id));
   };
 
   const handleOpenEditModal = (todo: Todo) => {
     setEditTaskId(todo.id);
-    setEditTaskTitle(todo.title);
-    setEditTaskDescription(todo.description);
-    setEditTaskDate(todo.todo_date);
-    setEditTaskPriority(todo.priority);
+    editTask.setTitle(todo.title);
+    editTask.setDescription(todo.description || '');
+    editTask.setDate(todo.todo_date || '');
+    editTask.setPriority(todo.priority as 'extreme' | 'moderate' | 'low');
     setShowEditTaskModal(true);
   };
 
-  const handleUpdateTodo = async (e: React.FormEvent) => {
+  const handleUpdateTodo = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!editTaskId) return;
 
-    // Validation
-    if (!editTaskTitle.trim()) {
-      toast.error('Please enter a task title');
-      return;
-    }
-    if (!editTaskDescription.trim()) {
-      toast.error('Please enter a task description');
-      return;
-    }
-
-    // Update todo
-    await dispatch(
+    const parsedDate = parseFlexibleDate(editTask.formData.date);
+    dispatch(
       updateTodo({
         id: editTaskId,
-        title: editTaskTitle,
-        description: editTaskDescription,
-        priority: editTaskPriority,
-        ...(editTaskDate && { todo_date: editTaskDate }),
+        title: editTask.formData.title,
+        description: editTask.formData.description,
+        todo_date: parsedDate,
+        priority: editTask.formData.priority,
       })
     );
+  };
+
+  const handleDeleteTodo = (id: number) => {
+    if (window.confirm('Are you sure you want to delete this todo?')) {
+      dispatch(deleteTodo(id));
+    }
   };
 
   const handleCancelEdit = () => {
     setShowEditTaskModal(false);
     setEditTaskId(null);
-    setEditTaskTitle('');
-    setEditTaskDescription('');
-    setEditTaskDate('');
-    setEditTaskPriority('moderate');
+    editTask.resetForm();
   };
-
-  // Auth protection
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      router.push('/login');
-    }
-  }, [router]);
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -335,135 +215,53 @@ const TodosPage = () => {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
-        {/* Header */}
         <Header />
 
         {/* Page Content */}
         <main className="flex-1 p-4 md:p-8 bg-linear-to-br from-blue-50 to-indigo-50 overflow-y-auto relative">
           <div className="max-w-7xl mx-auto w-full">
-            <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 gap-4">
-              <div>
-                <h1 className="text-[28px] md:text-[34px] font-bold text-[#0D224A]">
-                  Todos
-                </h1>
-                <div className="w-[68px] border-b-2 border-[#5272FF] mt-2"></div>
-              </div>
-
-              <button
-                onClick={() => setShowNewTaskModal(true)}
-                className="bg-[#5272FF] text-white w-full md:w-[134px] h-[42px] rounded-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
-              >
-                <Plus size={20} />
-                New Task
-              </button>
-            </div>
+            <TodoHeader onNewTask={() => setShowNewTaskModal(true)} />
 
             {/* Search & Filter Bar */}
             <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 mb-6">
               <SearchBar
-                value={searchQuery}
-                onChange={setSearchQuery}
+                value={filters.searchQuery}
+                onChange={filters.setSearchQuery}
                 className="flex-1"
               />
-
-              {/* Date Filter Button with Dropdown */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowDateFilter(!showDateFilter)}
-                  className="h-[42px] min-h-[42px] w-full md:w-auto px-4 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center md:justify-start gap-2 whitespace-nowrap"
-                >
-                  <span className="text-gray-700 text-sm">
-                    {displayTodos.length > 0 ? 'Sort By' : 'Filter By'}
-                  </span>
-                  <Image
-                    src="/filter.png"
-                    alt="Filter"
-                    width={11}
-                    height={10}
-                    className="object-contain"
-                    unoptimized
-                  />
-                </button>
-
-                {/* Date Filter Dropdown */}
-                {showDateFilter && (
-                  <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg w-full md:w-64 z-10">
-                    <div className="px-4 py-3">
-                      <h3 className="font-semibold text-left text-gray-700">
-                        Date
-                      </h3>
-                    </div>
-                    <div className="mx-4 border-b border-gray-200"></div>
-
-                    <div className="p-4">
-                      {[
-                        { id: 'today', label: 'Deadline Today' },
-                        { id: '5days', label: 'Expires in 5 days' },
-                        { id: '10days', label: 'Expires in 10 days' },
-                        { id: '30days', label: 'Expires in 30 days' },
-                      ].map((filter) => (
-                        <label
-                          key={filter.id}
-                          className="flex items-center gap-2 mb-1 cursor-pointer hover:bg-gray-50 p-2 rounded"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={selectedFilter.includes(filter.id)}
-                            onChange={() => handleToggleFilter(filter.id)}
-                            className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                          />
-                          <span className="text-gray-700">{filter.label}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+              <DateFilterDropdown
+                isOpen={filters.showDateFilter}
+                onToggle={() => filters.setShowDateFilter(!filters.showDateFilter)}
+                selectedFilters={filters.selectedFilters}
+                onFilterChange={filters.toggleFilter}
+                todosCount={displayTodos.length}
+              />
             </div>
 
             {/* Todo List Section */}
-            {loading && getFilteredTodos().length === 0 ? (
+            {loading && filters.filteredTodos.length === 0 ? (
               <div className="bg-white rounded-xl shadow-md p-8 w-full min-h-[350px] flex items-center justify-center">
                 <p className="text-gray-500">Loading todos...</p>
               </div>
-            ) : getFilteredTodos().length === 0 ? (
-              /* Empty State with white background */
-              <div className="bg-white rounded-xl shadow-md p-8 w-full min-h-[380px]">
-                <div className="flex flex-col items-center justify-center py-12">
-                  <div className="relative mb-5">
-                    <Image
-                      src="/todo.png"
-                      alt="No todos"
-                      width={170}
-                      height={170}
-                      unoptimized
-                    />
-                  </div>
-                  <p className="text-[22px] text-[#201F1E] font-medium">
-                    No todos yet
-                  </p>
-                </div>
-              </div>
+            ) : filters.filteredTodos.length === 0 ? (
+              <EmptyTodoState />
             ) : (
-              /* Todos exist - No white background, just cards */
               <div>
-                {/* Your Todos Heading */}
                 <h2 className="text-2xl font-semibold text-[#0D224A] mb-6">
                   Your Tasks
                 </h2>
 
-                {/* Todo Items - Grid Layout with Drag & Drop */}
                 <DndContext
                   sensors={sensors}
                   collisionDetection={closestCenter}
                   onDragEnd={handleDragEnd}
                 >
                   <SortableContext
-                    items={getFilteredTodos().map((todo) => todo.id)}
+                    items={filters.filteredTodos.map((todo) => todo.id)}
                     strategy={verticalListSortingStrategy}
                   >
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-                      {getFilteredTodos().map((todo) => (
+                      {filters.filteredTodos.map((todo) => (
                         <TodoCard
                           key={todo.id}
                           todo={todo}
@@ -482,34 +280,34 @@ const TodosPage = () => {
           <TaskModal
             isOpen={showNewTaskModal}
             mode="new"
-            title={newTaskTitle}
-            description={newTaskDescription}
-            date={newTaskDate}
-            priority={newTaskPriority}
+            title={newTask.formData.title}
+            description={newTask.formData.description}
+            date={newTask.formData.date}
+            priority={newTask.formData.priority}
             loading={loading}
             onClose={() => setShowNewTaskModal(false)}
             onSubmit={handleAddTodo}
-            onTitleChange={setNewTaskTitle}
-            onDescriptionChange={setNewTaskDescription}
-            onDateChange={setNewTaskDate}
-            onPriorityChange={setNewTaskPriority}
+            onTitleChange={newTask.setTitle}
+            onDescriptionChange={newTask.setDescription}
+            onDateChange={newTask.setDate}
+            onPriorityChange={newTask.setPriority}
           />
 
           {/* Edit Task Modal */}
           <TaskModal
             isOpen={showEditTaskModal}
             mode="edit"
-            title={editTaskTitle}
-            description={editTaskDescription}
-            date={editTaskDate}
-            priority={editTaskPriority}
+            title={editTask.formData.title}
+            description={editTask.formData.description}
+            date={editTask.formData.date}
+            priority={editTask.formData.priority}
             loading={loading}
             onClose={handleCancelEdit}
             onSubmit={handleUpdateTodo}
-            onTitleChange={setEditTaskTitle}
-            onDescriptionChange={setEditTaskDescription}
-            onDateChange={setEditTaskDate}
-            onPriorityChange={setEditTaskPriority}
+            onTitleChange={editTask.setTitle}
+            onDescriptionChange={editTask.setDescription}
+            onDateChange={editTask.setDate}
+            onPriorityChange={editTask.setPriority}
           />
         </main>
       </div>

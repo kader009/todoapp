@@ -10,28 +10,31 @@ export default function Header() {
   });
 
   return (
-    <header className="bg-white border-b border-gray-200 px-[69px] py-4 flex items-center justify-between h-[88px]">
+    <header
+      className="bg-white border-b border-gray-200 px-[69px] py-4 flex items-center justify-between h-[88px]"
+      role="banner"
+    >
       {/* Logo */}
       <div className="flex items-center gap-2">
         <Image
           src="/Group.png"
-          alt="Logo"
+          alt="Dreamy Software Logo"
           width={32}
           height={32}
           className="object-contain"
         />
-        <div className="flex flex-col">
+        <div className="flex flex-col" aria-label="Company name">
           <span className="font-extrabold text-lg leading-tight">DREAMY</span>
           <span className="font-bold text-sm leading-tight">SOFTWARE</span>
         </div>
       </div>
 
       {/* Right Section */}
-      <div className="flex items-center gap-4">
-        <button>
+      <nav className="flex items-center gap-4" aria-label="Header navigation">
+        <button aria-label="View notifications">
           <Image
             src="/Notifications.png"
-            alt="Notifications"
+            alt=""
             width={34}
             height={34}
             className="object-contain"
@@ -40,10 +43,10 @@ export default function Header() {
           />
         </button>
 
-        <button>
+        <button aria-label="View calendar">
           <Image
             src="/Cal.png"
-            alt="Calendar"
+            alt=""
             width={34}
             height={34}
             className="object-contain"
@@ -52,11 +55,16 @@ export default function Header() {
           />
         </button>
 
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-gray-600" aria-label="Current date">
           <div className="font-semibold">{weekday}</div>
-          <div className="text-gray-500">{formattedDate}</div>
+          <time
+            dateTime={new Date().toISOString().split('T')[0]}
+            className="text-gray-500"
+          >
+            {formattedDate}
+          </time>
         </div>
-      </div>
+      </nav>
     </header>
   );
 }

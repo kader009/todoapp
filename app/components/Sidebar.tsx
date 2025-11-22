@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/libs/hook';
 import { logout } from '@/libs/feature/authSlice';
 import { clearTodos } from '@/libs/feature/todoSlice';
 import { toast } from 'sonner';
+import { NAV_ITEMS, STORAGE_KEYS } from '@/constants';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -15,8 +16,8 @@ export default function Sidebar() {
   const { user, loading } = useAppSelector((state) => state.auth);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
+    localStorage.removeItem(STORAGE_KEYS.TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
 
     dispatch(logout());
     dispatch(clearTodos());
@@ -26,16 +27,18 @@ export default function Sidebar() {
     router.push('/login');
   };
 
-  const navItems = [
-    { name: 'Dashboard', href: '/', icon: '/dashboard.png' },
-    { name: 'My Todos', href: '/todos', icon: '/my task.png' },
-    { name: 'Account Information', href: '/profile', icon: '/people.png' },
-  ];
-
   return (
-    <aside className="w-[340xp] bg-[#0D224A] min-h-screen text-white flex flex-col z-40">
+    <aside
+      className="w-[340xp] bg-[#0D224A] min-h-screen text-white flex flex-col z-40"
+      role="navigation"
+      aria-label="Main navigation"
+    >
       {/* User Profile Section */}
-      <div className="p-6 text-center mt-[60px]">
+      <div
+        className="p-6 text-center mt-[60px]"
+        role="region"
+        aria-label="User profile"
+      >
         <div className="w-20 h-20 rounded-full bg-gray-300 mx-auto mb-3 overflow-hidden border border-white">
           <Image
             src={
@@ -47,7 +50,7 @@ export default function Sidebar() {
                     }${user.profile_image}`
                 : '/profile.jpg'
             }
-            alt="Profile"
+            alt={`${user?.first_name || 'User'}'s profile picture`}
             width={80}
             height={80}
             className="w-full h-full object-cover"
@@ -81,14 +84,15 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1">
-        {navItems.map((item) => {
+      <nav className="flex-1" aria-label="Main menu">
+        {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href;
 
           return (
             <Link
               key={item.href}
               href={item.href}
+              aria-current={isActive ? 'page' : undefined}
               className={`flex items-center gap-3 px-8 py-3 mb-2 transition-colors text-base ${
                 isActive
                   ? 'bg-linear-to-r from-[#5272FF]/40 to-[#0D224A]/60 text-white'
@@ -97,7 +101,7 @@ export default function Sidebar() {
             >
               <Image
                 src={item.icon}
-                alt={item.name}
+                alt=""
                 width={20}
                 height={20}
                 className={`object-contain ${
@@ -114,11 +118,12 @@ export default function Sidebar() {
       {/* Logout Button */}
       <button
         onClick={handleLogout}
+        aria-label="Logout from account"
         className="flex items-center gap-3 px-8 py-4 text-gray-300 hover:bg-blue-800 transition-colors cursor-pointer"
       >
         <Image
           src="/Vector.png"
-          alt="Logout"
+          alt=""
           width={20}
           height={20}
           className="object-contain"
